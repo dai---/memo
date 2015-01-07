@@ -1,0 +1,46 @@
+
+
+カレントディレクトリにリポジトリを作成する
+git init
+
+Gitで使う名前とメールアドレスを登録
+git config --global user.name "hoge"
+git config --global user.email "hoge@gmail.com"
+
+リポジトリの状態を確認
+git status
+
+インデックスに登録
+git add
+
+コミット
+git commit -m "first commit"
+
+コミットログを確認する
+git log
+
+
+git clone <レポジトリ>
+git branch <branch_name>
+git branch
+git checkout <branch_name>
+git add
+git commit -m "修正した"
+
+git remote -v
+git push origin master
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

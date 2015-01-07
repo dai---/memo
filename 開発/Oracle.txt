@@ -1,0 +1,37 @@
+
+
+■管理者で接続
+Windowsのマークから「 SQLコマンドラインの実行」
+ドスプロンプトが起動したら
+・connect / as sysdba
+それがgit bashのCMDで
+・sqlplus / as sysdba/password
+
+■databaseの確認(XEだとデータベース1個しかつくれないらしい)
+select value from v$parameter where name ='db_name';
+
+■ユーザー追加
+CREATE USER <user_name> IDENTIFIED BY <password>;
+
+■ユーザーの確認
+select username from user_users;
+
+■追加したユーザーにログイン権限付与
+GRANT CONNECT TO hoge;
+
+■テーブル作成
+create table文を実行して、テーブルを作成します。ここでは３つの情報（主キーであるid、名前、ふりがな）をもつテーブルを作ってみます。
+create table table01
+(
+  id number,
+  name varchar(50),
+  furigana varchar(50),
+  primary key( id )
+);
+
+■ユーザにさきほど作成したtable01テーブルへの操作権限を与えます。これでhogeユーザはtable01テーブルに対してデータの検索、挿入、更新、削除ができるようになります。
+GRANT select,insert,update,delete ON table01 TO hoge;
+
+
+
+

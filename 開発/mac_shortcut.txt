@@ -1,0 +1,27 @@
+
+
+command + Q 
+：
+ 
+アプリケーションの終了
+command + W： ウィンドウを閉じる
+command + option + W：全ウィンドウを閉じる 
+ 
+
+command + A：全選択 
+command + C：コピー 
+command + X：カット 
+command + V：ペースト 
+
+command + Z：取り消す／やり直す 
+command + S：保存 
+command + F：検索
+
+command + R：リロード  
+command + Shift + 3：スクリーンショット（全画面）
+command + Shift + 4 ：スクリーンショット（選択範囲）
+command + delete：ファイルをゴミ箱に移動
+command + tab：ウィンドウの切り替え
+
+
+
