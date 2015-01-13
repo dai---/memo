@@ -12,8 +12,11 @@ git remote add origin https://github.com/dai---/memo.git
 git push -u origin master
 
 
-カレントディレクトリにリポジトリを作成する
+・カレントディレクトリにリポジトリを作成する
 git init
+
+・設定の確認
+git config --list
 
 Gitで使う名前とメールアドレスを登録
 git config --global user.name "hoge"

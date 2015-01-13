@@ -71,7 +71,7 @@ set trimspool on
 
 参考：http://www.shift-the-oracle.com/sqlplus/system-variable/
 set linesize 1000
-だけでだいぶ見やすくなる。
+だけでだいぶ見やすくなる。。
 
 
 ユーザー：study
