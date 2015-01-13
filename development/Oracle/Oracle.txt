@@ -32,6 +32,10 @@ create table table01
 ■ユーザにさきほど作成したtable01テーブルへの操作権限を与えます。これでhogeユーザはtable01テーブルに対してデータの検索、挿入、更新、削除ができるようになります。
 GRANT select,insert,update,delete ON table01 TO hoge;
 
+■テーブル一覧を表示する
+select * from tab;
 
 
+ユーザー：study
+password:oracle
 
