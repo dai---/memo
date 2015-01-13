@@ -50,6 +50,30 @@ GRANT select,insert,update,delete ON table01 TO hoge;
 select * from tab;
 
 
+■sqlplusが見づらい
+・設定値の確認（下記の例ではlinesizeを確認）
+show linesize
+
+・一行幅（下記の例では1000列）
+set linesize 1000
+
+・区切り文字（下記の例ではカンマ）
+set colsep ,
+
+・改ページ（下記の例では改ページしない）
+set pagesize 0
+
+・見出し有無（下記の例では見出し無し）
+set heading off
+
+・右側の余白有無（下記の例では余白有り）
+set trimspool on
+
+参考：http://www.shift-the-oracle.com/sqlplus/system-variable/
+set linesize 1000
+だけでだいぶ見やすくなる。
+
+
 ユーザー：study
 password:oracle
 
