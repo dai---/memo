@@ -1,0 +1,280 @@
+
+公式サイト
+rubyonrails.org
+
+
+Modelは単数形で
+Controller, Viewの時は複数形で書く。
+
+デバック用のPryはいれたほうがいいかもしれない
+デバックコードをコード内に埋め込むことができる。
+
+bundle installしたらbundle exec rails sで再起動
+
+###########Gemfileの書き方#############################
+#rackというgemの利用可能な中で最新バージョンのrackがインストールされます。
+gem 'rack'
+
+#利用するgemのバージョンを限定することもできます。
+gem 'rack', '1.4.0'
+
+「1.4.0移行のバージョンでなるべく新しいもの」を使いたい場合は
+gem 'rack', '>=1.4.0'
+
+#この表記は gem 'rack', '>=1.4.0' かつ gem 'rack', '< 1.5' を意味します。
+#つまり1.4.0よりも新しいバージョンを使いたいが、
+#たとえ利用可能であっても1.5よりも上は使いたくない、
+#という条件を指定したことになります。
+#メジャーバージョンアップをまたぐと大きくgemの動作が変わることがあるので、
+#gemを新しくしすぎてアプリケーションを破壊しないようによく使われる書き方です。
+gem 'rack', '~>1.4.0'
+
+
+######################################################
+
+＊rails哲学
+-DRY
+-- Don't Repeat Yourself
+---同じソースを書かない
+-Coc
+-- Convention over Configuration
+---ごちゃごちゃ設定を書かずに規約でルールを縛る
+
+＊MVCアーキテクチャ
+Model:モデル
+View:画面
+Controller:ModelとViewをとりもつもの
+
+
+
+bundle exec rails new myapp
+#ジェムセットとかはめんどくさいのでプロジェクトごとにライブラリを取得する
+#vendor/bundler内のrailsを使う場合はbundle exec をつける
+mkdir myapp
+cd myapp
+bundle init
+bundle install --path vendor/bundler
+bundle exec rails new .
+#データベースを指定する場合は
+bundle exec rails new . -d mysql
+
+#rails newすることによってテンプレートが作成される
+
+vim Gemfile
+#でrailsのコメントアウトをはずし、
+bundle install
+#--path vendor/bundlerは一度つければあとは自動的に同じパスにインストールされるので
+つける必要なし
+
+#WEBrickを起動する
+bundle exec rails server
+
+#エラーになるので、
+vim Gemfile
+#でtherubyracerのコメントアウトを外す。
+
+#therubyracerをインストールする為に、
+bundle install
+#プロジェクトで新しく利用するgemが増える時は、
+#Gemfileにgem 'gemname'を1行追加してbundle checkしたあと、
+#bundle installを実行して下さい。でも普通にbundle installでも入るから必要ないかも。
+
+#ちなみに
+#bundle updateとは
+#インストールしたgemの新しいバージョンが利用可能であれば最新版に更新します。
+#さらにちなみにbundle cleanとやると
+Gemfileの指定を調べて、現在使われていないgemを削除します。
+
+
+#WEBrickを起動する
+bundle exec rails s
+#serverはsに省略できる。
+#デフォルトのportは3000番だがportを変えたい人は
+bundle exec rails s -p 3001
+#そうするとrailsのウェルカム画面が表示される
+
+#rails newで主にいじるのは「app」「config」「db」のみ
+
+#indexとかshowとかdeleteとか一気に作りたい場合にはscaffoldを使用する
+bundle exec rails generate scaffold User name:string score:integer
+#bundle exec rails destroy scaffold Userで消えると思う多分
+
+#マイグレーションファイルが作成されるので
+bundle exec rake db:migrate
+#マイグレーションとはこういうふうにデータベースというかテーブルを作ってください
+#という設計書みたいなもん。それをデータベースに反映させる為にrake db:maigrateを実行する
+#ちなみにロールバックもできるbundle exec rake db:rollback
+#ただ実際にはscaffoldを使うことあんまりなくて、0からつくっていく事が多い、
+#本当にシンプルなアプリケーションだったら使うこともあるかもしれない。
+
+bundle exec rails s
+[http://localhost:3000/users]にアクセスするとindexとかnewとかdeleteとかできるようになってる
+
+///////////////////////////////////////////////////////
+
+mkdir taskapp
+cd taskapp
+bundle init
+bundle install --path vendor/bundler
+bundle exec rails new .
+#データベースを指定する場合は
+bundle exec rails new . -d mysql
+
+vi Gemfile
+#でtherubyracerのコメントアウトを外す。
+
+bundle install
+bundle exec rails s
+#ウェルカム画面が表示されてる事を確認する
+
+
+#model 単数形で最初は大文字
+bundle exec rails g model Project title:string
+bundle exec rails g model Project title #デフォルトがstringの為、省略可能
+#マイグレーションファイルが作成されるのでデータベースに反映させる。
+bundle exec rake db:migrate
+
+#ちゃんと反映されてるか確認する為、
+bundle exec rails db
+#SQLiteが起動して
+.schema
+#ってやるとテーブルが作成されてる事を確認できる
+#mysqlだったらshow tables?
+#railsが勝手にidとかインサートした日とかアップデートした日とかのカラムを作ってくれる。
+
+#インタラクティブに操作する事も可能
+bundle exec rails console
+
+#インサートする為のオブジェクトを作成する
+p = Project.new(title: "p1")
+#オブジェクトを保存、これでインサートされる
+p.save
+#中身を確認したい場合
+p
+
+#createはnewとsave
+Project.create(title: "2")
+
+#Projectの一覧を確認する
+Project.all
+
+#インタラクティブコンソールを抜ける場合は
+quit
+
+#データベースにはいって正常にインサートされているか確認する
+bundle exec rake db
+select * from projects
+
+
+#controller 複数形で最初は大文字
+bundle exec rails g controller Projects
+#controllerのファイルとViewに関するフォルダapp/view/projectsが作成される。
+#ディレクトリ名は複数形になる。
+
+#config/routes.rbに
+resources :projects
+#を記述する。プロジェクトに関するルーティングURLを自動生成するという設定
+
+#ルーティングの確認
+bundle exec rake routes
+#結構重要。一覧を出すためのロジックはprojects controllerのindexアクションに書きなさいよという設定
+
+
+#projectsコントローラー
+class ProjectsController < ApplicationController
+
+  def index
+    @projects = Project.all
+  end
+
+end
+
+#@をつけた変数はViewの中でそのまま使える。
+
+
+#projectsビュー views/projects←複数形になる。
+#コントローラーをつくっただけではViewは作成されないので、
+#app/views/projects/にファイルを新規作成する
+#controllerでindexアクションを作成したので
+#app/views/projects/index.html.erbを作成する。これも規約のひとつ
+#<% %> rubyの制御構造を書くために書く。<% end %>
+#<%= %> 式を評価して内容を表示する
+
+<h1>Projects</h1>
+<ul>
+  <% @projects.each do |project| %>
+	<li><%= project.title %></li>
+  <% end %>
+</ul>
+
+bundle exec rake routes
+bundle exec rails s
+#「http://localhost:3000/projects」で内容を確認
+
+
+
+////////////////////
+
+#「http://localhost:3000/」で内容を確認できるようにする。
+# config/routes.rb
+
+  root 'projects#index'
+
+#を追加する。そうすればprojectsのindexがルートになる。
+
+
+#すべてのファイルに共通のHTMLはどこに書いてあるのか。
+#app/views/layouts/application.html.erb
+#にヘッダーとかフッダーとか書かれており、実際にviewsに記載したものは
+<%= yield %>
+#というところに反映される。
+
+<%= image_tag "logo.png" %> #で簡単にロゴを表示する事ができる。app/assets/imagesを見に行ってくれる。
+<%= yield %>
+
+/////////////////////
+
+間違えてrails gしたファイルをrails destroy で一括削除できる。rails d と短縮可能。
+$ rails g controller ProductCategories
+$ rails d controller ProductCategories
+
+$ rails g model Product name:string quantity:integer
+$ rails d model Product
+
+$ rails g scaffold ProductCategory name:string
+$ rails d scaffold ProductCategory
+
+
+/////////////////////
+
+会社でやること
+bundle exec rails g controller Tops
+#indexファイルもつくりたい場合は
+bundle exec rails g controller Homes index edit show new
+bundle exec rails g controller Homes index
+app/views/roots/に
+index.html.erbを作成、上記コマンドでindexもつくってるからいらない
+↑のファイルを編集
+routes.rbに
+  root 'home#index'
+を追加
+
+
+
+
+
+
+
+######bootstrap3の設定方法############
+#Gemfileに追加
+gem 'twitter-bootstrap3-rails'
+#CSSとかJSを作成する
+rails generate bootstrap:install static
+
+rails g bootstrap:layout application fluid #レスポンシブ
+#または
+rails g bootstrap:layout application fixed
+#もちろんレスポンシブで。
+#####################################
+
+
