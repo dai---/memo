@@ -1,0 +1,38 @@
+
+
+
+インデックスに登録
+git add filename
+
+コミット
+git commit -m "メッセージを入力"
+
+インデックスに登録する前に最新コミットとの違いを確認する場合
+git diff
+
+インデックスに登録後に最新コミットとの違いを確認する場合
+git diff HEAD
+git diff head
+
+最新のコミットの状態に戻したいとき
+git checkout HEAD filename
+git checkout head filename
+
+いつコミットされたとかのログを確認したいとき
+git log
+
+コミットした情報を確認したいとき
+git show
+
+自分のブランチを確認する
+git branch
+
+ブランチを作成する
+git branch branchname
+
+gitlabのネットワークみたいな感じ。どんな感じでマージされたか確認できる
+git log --oneline --decorate --graph
+
+
+
+
