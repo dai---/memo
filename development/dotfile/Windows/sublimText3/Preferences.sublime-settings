@@ -1,0 +1,57 @@
+{
+    "auto_complete": true,                   // オートコンプリート
+    "auto_complete_commit_on_tab": true,     // 補完候補の選択にタブキーのみを用いる
+    "auto_complete_delay": 50,               // 補完候補表示の遅延
+    "auto_complete_size_limit": 4194304,     // オートコンプリートの最大サイズ
+    "auto_indent": true,                     // オートインデント
+    "auto_match_enabled": true,              // 閉じ括弧などを補完する。
+    "bold_folder_labels": true,              // サイドバーのフォルダ名を太字に
+    "caret_style": "phase",                  // キャレットのスタイルを変える。他に「smooth」「blick」「solid」「wide」など
+    "close_windows_when_empty": false,       // タブを全て閉じたらウィンドウも閉じる
+    "color_scheme": "Packages/User/SublimeLinter/zenburn (SL).tmTheme",  // カラースキームを変更
+    "detect_indentation": true,              // インデントの検出
+    // ファイルを読み込むと自動的にtranslate_tabs_to_spacesとtab_sizeを設定
+    "draw_indent_guides": true,              // インデントの補助線の描画
+    "draw_minimap_border": true,             // ミニマップの表示位置にボーダーを付ける
+    "draw_white_space": "all",               //タブやスペースなどの不過視文字を表示
+    "ensure_newline_at_eof_on_save": true,   // ファイルの最終行を改行記号にする
+    "fade_fold_buttons": true,               // 折り畳むボタンを隠す。ガーターにマウスポインタをかざすことで表示。
+    //"font_face": "Console",                // フォントの種類（OS X）
+    //"font_size": 11,                       // フォントサイズ（OS X）
+    // "font_face": "Inconsolata",           // フォントの種類（Win）
+    "font_face": "Consolas",                 // フォントの種類（Win）
+    "font_size": 10,                         // フォントサイズ（Win）
+    "font_options":["subpixel_antialias"],   // フォントのアンチエイリアス表示
+    "highlight_line": true,                  // キャレットのある行をハイライトする
+    "highlight_modified_tabs": true,         // 未保存タブを強調表示
+    "hot_exit": false,                       // 有効にするとアプリケーションの終了時にダイアログを出さずにすぐ終了する
+                                             // 編集中のファイルは次回起動時に復元される
+    "ignored_packages":["Vintage"],          // 使用しないパッケージ
+    "indent_guide_options":["draw_normal","draw_active"],  // インデントの補助線のオプション
+    "indent_subsequent_lines": true,         // 折り返し後の文頭位置。trueなら同じインデントの階層までインデントされる。
+    "line_numbers": true,                    // 行番号の表示
+    "open_files_in_new_window": false,       // trueでファイルを開く際に新しいウィンドウで開く（OS Xのみ）
+    "save_on_focus_lost": false,             // 別のタブやウィンドウにフォーカスが移ると自動で保存
+    "tab_completion": true,                  // タブキーによる補完決定
+                                             // 補完候補の選択を誤ったときはCtrl+Spaceで選択をやり直せる
+    "tab_size": 2,                           // タブサイズ
+    //"theme": "Refined-Dark.sublime-theme", // テーマを変更
+    "translate_tabs_to_spaces": true,        // タブ文字をスペースに変換
+    "trim_automatic_white_space": true,      // 空行のインデントを取り除く
+    "trim_trailing_white_space_on_save": true, // 保存時に行末の空白を削除する
+    "word_wrap": true,                       // テキストの折り返し
+    "wrap_width": 0,                         // テキストの折り返しをウインドウの幅で
+    "default_encoding": "UTF-8",
+    "fold_buttons": true,
+    "gutter": true,
+    "show_line_ending": true,
+    "show_encoding": true,
+    "use_tab_stops": true,
+    "line_padding_top": 5,
+    "margin": -3,
+
+    /* for Emmet Use */
+    "disable_formatted_linebreak": true,     // Emmetを有効にすると、日本語変換確定後に文字が消えるのを防ぐ
+    "disabled_single_snippet_for_scopes": "",// Emmetを有効にすると、HTMLで「php」の展開が「<?php ?>」にならない問題の回避
+    "enable_emmet_keymap": true              // 英語キーボード以外でEmmetを使う場合は「false」にする
+}

@@ -1,0 +1,36 @@
+{
+	"in_process_packages":
+	[
+	],
+	"installed_packages":
+	[
+		"Alignment",
+		"All Autocomplete",
+		"AutoFileName",
+		"BracketHighlighter",
+		"ConvertToUTF8",
+		"CSS Snippets",
+		"CSScomb",
+		"Dotfiles Syntax Highlighting",
+		"Emmet",
+		"FindKeyConflicts",
+		"Git",
+		"GlassIt",
+		"Goto-CSS-Declaration",
+		"Hayaku - tools for writing CSS faster",
+		"HTML5",
+		"IMESupport",
+		"Japanize",
+		"jQuery",
+		"Keymaps",
+		"Package Control",
+		"RecentActiveFiles",
+		"SCSS",
+		"SideBarEnhancements",
+		"Sublime Files",
+		"SublimeLinter",
+		"SublimeLinter-ruby",
+		"TrailingSpaces",
+		"zenburn"
+	]
+}
