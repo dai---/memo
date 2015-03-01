@@ -1,0 +1,130 @@
+
+##【ホストOS】####################################################################
+・VirtualBoxインストール
+・Vagrantインストール
+
+#git bashで作業(vagrant sshができない為。)
+mkdir -p /work/vagrant/centos-rails6.5
+cd /work/vagrant/centos-rails6.5
+vagrant init chef/centos-6.5
+
+#Vagrantfileの編集
+# config.vm.network "private_network", ip: "192.168.33.10" のコメントを外す。
+#config.vm.network :"forwarded_port", guest: 3000, host: 3000
+#を追加しなくてもよい。
+
+#ゲストOS起動
+vagrant up
+#ゲストOSにログイン
+vagrant ssh
+
+##########################################################################
+
+##【ゲストOS】####################################################################
+
+sudo yum -y groupinstall "Development Tools"
+sudo yum -y install openssl-devel
+sudo yum -y install libffi-devel
+sudo yum -y install readline-devel
+sudo yum -y install sqlite-devel
+#mysqlのインストールはhttp://www.kakiro-web.com/linux/centos6-mysql-yum-repository-install.html
+#or
+#epelとremiレポジトリを追加します。
+sudo rpm -ivh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+sudo rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+#mysqlのインストール
+sudo yum -y install mysql mysql-devel mysql-server
+sudo vi /etc/my.cnf #で
+character-set-server = utf8　#を追加
+service mysqld start　#とりあえず起動する　
+mysql_secure_installation　#passwordを聞かれるがまだ設定してないので空白Enter　以降すべてYES
+
+#自動起動
+chkconfig mysqld on
+service mysqld start
+service mysqld stop
+
+#or
+sudo yum -y install --enablerepo=epel make gcc zlib-devel openssl-devel readline-devel ncurses-devel gdbm-devel db4-devel libffi-devel tk-devel libyaml-devel
+
+#rbenvをシステムワイドにインストール
+cd /usr/local
+sudo git clone git://github.com/sstephenson/rbenv.git rbenv
+
+#ruby-buildインストール
+sudo mkdir /usr/local/rbenv/plugins
+cd /usr/local/rbenv/plugins
+sudo git clone git://github.com/sstephenson/ruby-build.git
+cd ruby-build
+sudo ./install.sh
+
+#rbenvのディレクトリを作成
+sudo mkdir /usr/local/rbenv/shims /usr/local/rbenv/versions
+#rbenvグループを追加
+sudo groupadd rbenv
+#/usr/local/rbenvを再起的にrbenvグループに変更
+sudo chgrp -R rbenv /usr/local/rbenv
+#/usr/local/rbenvを再起的に権限変更
+sudo chmod -R g+rwxXs /usr/local/rbenv
+
+
+#パスを通す。
+sudo vi /etc/profile.d/rbenv.sh
+export RBENV_ROOT="/usr/local/rbenv"
+export PATH="/usr/local/rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+exec $SHELL -1
+#or
+source /etc/profile
+
+#rubyのインストール
+#ここからsudo suしないとエラーになる
+#このときrootであることに注意(一般ユーザでsudo rbenv install 2.0.0-p0とすると/root/.rbenv/下にインストールされ共有できない).
+rbenv install -l
+rbenv install 2.2.0
+sudo rbenv global 2.2.0
+sudo rbenv rehash
+
+#bundlerだけはコマンドラインでインストールする。
+gem install bundler
+rbenv rehash
+#バージョン確認
+bundle -v
+#bundleのインストール先確認
+/usr/local/rbenv/versions/2.2.0/bin/bundler -v #Bundler version 1.8.3とでる
+
+#userになってパスを通す
+exit
+bundle -v　#そんなコマンドないと言われる。
+vi ~/.bash_profile　#の$PATHに以下を追加
+vi ~/.zprofile     #zsh使ってる場合はこっち。$PATHに以下を追加
+/usr/local/rbenv/versions/2.2.0/bin
+
+#~/.bashrcに以下を追加
+bundle exec rails s -b 192.168.33.10
+
+
+#アプリケーションを作成するところで
+mkdir /work/test/
+cd /work/test/
+bundle init
+vi Gemfile #railsのコメントアウトを外す。
+bundle install --path vendor/bundle
+
+たまに
+#An error occurred while installing rails-deprecated_sanitizerみたいなエラーがでるが
+#gemのサーバーが落ちてるだけみたい。
+#再度bundle install したら上手くいった。
+bundle install --path vendor/bundle
+
+##########################################################################
+
+
+
+
+
+
+
+
+
+
