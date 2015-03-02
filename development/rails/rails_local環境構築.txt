@@ -36,8 +36,11 @@ sudo rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
 sudo yum -y install mysql mysql-devel mysql-server
 sudo vi /etc/my.cnf #で
 character-set-server = utf8　#を追加
-service mysqld start　#とりあえず起動する　
+service mysqld start　#とりあえず起動する
+service mysqld stop　#停止
 mysql_secure_installation　#passwordを聞かれるがまだ設定してないので空白Enter　以降すべてYES
+mysql -u root -p　#で接続
+mysql> status #で確認。なにを？まぁ起動してるかどうか的なやつかなぁ
 
 #自動起動
 chkconfig mysqld on
@@ -116,6 +119,55 @@ bundle install --path vendor/bundle
 #gemのサーバーが落ちてるだけみたい。
 #再度bundle install したら上手くいった。
 bundle install --path vendor/bundle
+
+#railsアプリケーションのひな形作成
+bundle exec rails new .
+bundle exec rails new . -d mysql
+
+#Gemfileのtherubyracerのコメントアウトを外す
+bundle install
+
+mysql -u root -p　#でmysqlに接続
+mysql> create user <rails_app_name>@localhost identified by '<password>';
+mysql> grant all on <rails_app_name>_development.* to <rails_app_name>@localhost;
+mysql> grant all on <rails_app_name>_test.* to <rails_app_name>@localhost;
+#ユーザーが作成されたか確認
+mysql> select Host, User, Password from mysql.user;
+mysql> exit
+
+#railsのデータベースの設定を修正(username: ←に半角がないとエラーになる)
+vi config/database.yml
+
+development:
+  〜
+  username: <rails_app_name>
+  password: <password>
+  〜
+test:
+  〜
+  username: <rails_app_name>
+  password: <password>
+
+
+#データベース作成(development/test/productionのすべてを作成)
+bundle exec rake db:create:all
+bundle exec rake db:create
+#rake db:create はこんなクエリで <rails_app_name>_development と <rails_app_name>_test データベースを作ってます。
+#CREATE DATABASE `<rails_app_name>_development` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`
+#CREATE DATABASE `<rails_app_name>_test` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`
+
+#作成したデータベースの消去
+#bundle exec rake db:create:all
+
+#railsサーバー起動
+bundle exec rails s -b 192.168.33.10 -p 3100
+
+
+
+
+
+
+
 
 ##########################################################################
 

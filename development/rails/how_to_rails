@@ -34,7 +34,7 @@ gem 'rack', '~>1.4.0'
 
 ＊rails哲学
 -DRY
--- Don't Repeat Yourself
+-- Don't Repeat Yourself'
 ---同じソースを書かない
 -Coc
 -- Convention over Configuration
