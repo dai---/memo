@@ -182,6 +182,8 @@ git init
 vi .gitignore
 #/vendor/bundle
 #/vendor/bundler を追加
+git config --global user.name "dai"
+git config --global user.email example@gmail.com
 git add .
 git commit -m "first commit"
 #githubのプッシュ先を設定。
