@@ -104,10 +104,17 @@ vi ~/.zprofile     #zsh使ってる場合はこっち。$PATHに以下を追加
 /usr/local/rbenv/versions/2.2.0/bin
 
 #~/.bashrcに以下を追加
-bundle exec rails s -b 192.168.33.10
+alias vib='vi ~/.bashrc'
+alias setb='source ~/.bashrc'
+alias viz='vi ~/.zshrc'
+alias setz='source ~/.zshrc'
+alias be='bundle exec'
+alias berc='bundle exec rails c'
+alias bedb='bundle exec rails db'
+alias bers='bundle exec rails s -b 192.168.33.10'
 
 
-#アプリケーションを作成するところで
+#アプリケーションを作成
 mkdir /work/test/
 cd /work/test/
 bundle init
@@ -163,10 +170,28 @@ bundle exec rake db:create
 bundle exec rails s -b 192.168.33.10 -p 3100
 
 
+#gitで管理
+#githubに鍵を登録する為に公開鍵と秘密鍵のペアを作成
+cd ~/.ssh
+ssh-keygen -t rsa -C "vagrant@example.com"
+#Enter3回押せばOK
+cat　id_rsa.pub #で表示された公開鍵をgithubに登録
 
+#railsのルートディレクトリで
+git init
+vi .gitignore
+#/vendor/bundle
+#/vendor/bundler を追加
+git add .
+git commit -m "first commit"
+#githubのプッシュ先を設定。
+git remote add origin git@github.com:dai---/dai-rails-study.git
+git pull origin master #githubでリポジトリを作成した際に勝手に作成されたreadmeとかをダウンロード
+git push origin master #でエラーにった場合、githubに正常に公開鍵が登録できていない。
 
-
-
+#開発はそれぞれのブランチでやること。
+git branch windows
+git branch mac
 
 
 ##########################################################################
