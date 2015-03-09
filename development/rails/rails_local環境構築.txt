@@ -42,6 +42,10 @@ mysql_secure_installation　#passwordを聞かれるがまだ設定してない�
 mysql -u root -p　#で接続
 mysql> status #で確認。なにを？まぁ起動してるかどうか的なやつかなぁ
 
+#SQLiteのインストール
+sudo yum -y install sqlite
+sudo yum -y install sqlite-devel
+
 #自動起動
 chkconfig mysqld on
 service mysqld start
@@ -49,6 +53,12 @@ service mysqld stop
 
 #or
 sudo yum -y install --enablerepo=epel make gcc zlib-devel openssl-devel readline-devel ncurses-devel gdbm-devel db4-devel libffi-devel tk-devel libyaml-devel
+
+#sudoers の設定
+sudo visudo -f /etc/sudoers.d/00_base
+#以下2行を追加
+Defaults !secure_path
+Defaults env_keep += "PATH RBENV_ROOT"
 
 #rbenvをシステムワイドにインストール
 cd /usr/local
@@ -73,9 +83,11 @@ sudo chmod -R g+rwxXs /usr/local/rbenv
 
 #パスを通す。
 sudo vi /etc/profile.d/rbenv.sh
+#以下3行を追加
 export RBENV_ROOT="/usr/local/rbenv"
 export PATH="/usr/local/rbenv/bin:$PATH"
 eval "$(rbenv init -)"
+#シェルの再起動
 exec $SHELL -1
 #or
 source /etc/profile
@@ -96,6 +108,135 @@ bundle -v
 #bundleのインストール先確認
 /usr/local/rbenv/versions/2.2.0/bin/bundler -v #Bundler version 1.8.3とでる
 
+#zshのインストール###################################
+mkdir -p ~/work/zsh
+cd ~/work/zsh
+#いや、なんかうまくいかないので、yumでインストールしようと思ったけどやめた。
+#sudo yum -y install zsh
+#sudo yum -y remove zsh
+
+#とりあえずインストール vagrantだったら今まの手順の中でインストールしてるかも。
+sudo yum -y install ncurses-devel
+
+# http://zsh.sourceforge.net/Arc/source.html
+#に最新版があるらしいです。参考:http://gitpub.hatenablog.com/entry/2013/07/07/182014
+wget http://downloads.sourceforge.net/project/zsh/zsh/5.0.7/zsh-5.0.7.tar.gz?r=http%3A%2F%2Fzsh.sourceforge.net%2FArc%2Fsource.html&ts=1425580779&use_mirror=jaist
+
+#解凍・インストール　参考：http://memo.yomukaku.net/entries/jDqwgQQ
+tar zxvf zsh-5.0.7.tar.gz
+cd zsh-5.0.7
+./configue
+make
+sudo make install
+
+#oh-my-zshのインストール
+cd ~
+git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+cp .oh-my-zsh/templates/zshrc.zsh-template .zshrc
+
+#現在インストールされているシェルを確認
+cat /etc/shells
+
+#ログイン・シェルでzshを利用できるようにするために、/etc/shellsの最終行に以下のように/usr/local/bin/zshを追加します。
+sudo vi /etc/shells
+↓みたいな感じで
+/bin/sh
+/bin/bash
+/sbin/nologin
+/bin/tcsh
+/bin/csh
+/usr/local/bin/zsh
+
+#次に、chshコマンドで実際にzshをログインシェルに設定します。
+chsh -s `which zsh`
+
+#テーマをsteeefに変更
+vi ~/.zshrc
+ZSH_THEME="steeef"
+
+#シェルがzshになったか確認
+echo $SHELL
+
+#.zprofileの編集
+vi ~/.zprofile
+#以下の行を追加してpathを通して、vimとかprofile.dにかいたrbenvとかを使えるようにする
+for i in /etc/profile.d/*.sh ; do
+    [ -r $i ] && source $i
+done
+export PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/rbenv/versions/2.2.0/bin
+
+#pathの確認
+echo $PATH
+#結果、以下のような感じになってればOK。:/usr/local/binがふたつあるのが気になる。
+/home/vagrant/bin
+:/usr/local/bin
+:/usr/local/rbenv/shims
+:/usr/local/rbenv/bin
+:/usr/local/bin
+:/bin
+:/usr/bin
+:/usr/local/sbin
+:/usr/sbin
+:/sbin
+:/usr/local/rbenv/versions/2.2.0/bin
+
+#.zshrcの編集
+vi ~/.zshrc
+#デフォルトで以下の設定になっているので
+export PATH=$HOME/bin:/usr/local/bin:$PATH
+#以下の設定に修正
+export PATH=$HOME/bin:$PATH
+#これでダブってた/usr/local/binが消えた。
+
+###################################
+
+#vimのインストール###################################
+#めんどくさい人はこれ
+#sudo yum -y install vim
+
+#vim7.4をインストールする場合
+#vimのバージョン確認
+yum list installed | grep vim
+#結果、vim-minimal.x86_64     2:7.2.411-1.8.el6
+
+#以下のコマンドで必要なパッケージがインストールされているか確認
+sudo yum list installed | grep mercurial
+sudo yum list installed | grep ncurses-devel
+sudo yum list installed | grep make
+sudo yum list installed | grep gcc
+
+#インストールされていない場合はそれぞれインストール。
+sudo yum -y install mercurial
+sudo yum -y install ncurses-devel
+sudo yum -y install make
+sudo yum -y install gcc
+
+#vimのインストール 参考：http://qiita.com/SOJO/items/9d6a65f3da941c49da36
+cd /usr/local/src
+#vimディレクトにクローンする。
+sudo hg clone https://vim.googlecode.com/hg/ vim
+#vimディレクトに移動する。
+cd /usr/local/src/vim
+#最新版がなにか確認する
+sudo hg pull
+#configureコマンドを使ってMakefileを生成して、make して　make install
+sudo ./configure --with-features=huge --enable-multibyte --disable-selinux
+sudo make
+sudo make install
+#これで完了 バージョン確認
+vim --version
+
+#プラグイン管理ツールをインストール
+mkdir -p ~/.vim/bundle
+git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
+
+#vim設定ファイルの編集　参考：https://github.com/dai---/memo/blob/master/development/dotfile/Mac/.vimrc
+vi ~/.vimrc
+#vimを起動して、プラグインをインストールするか聞かれるので、「y」を入力する
+vim
+
+###################################
+
 #userになってパスを通す
 exit
 bundle -v　#そんなコマンドないと言われる。
@@ -103,7 +244,9 @@ vi ~/.bash_profile　#の$PATHに以下を追加
 vi ~/.zprofile     #zsh使ってる場合はこっち。$PATHに以下を追加
 /usr/local/rbenv/versions/2.2.0/bin
 
-#~/.bashrcに以下を追加
+#~/.bashrc　or ~/.zshrcに以下を追加
+alias viv='vi ~/.vimrc'
+alias setv='source ~/.vimrc'
 alias vib='vi ~/.bashrc'
 alias setb='source ~/.bashrc'
 alias viz='vi ~/.zshrc'
@@ -112,6 +255,8 @@ alias be='bundle exec'
 alias berc='bundle exec rails c'
 alias bedb='bundle exec rails db'
 alias bers='bundle exec rails s -b 192.168.33.10'
+alias bean='bundle exec annotate'
+alias berr='bundle exec rake routes'
 
 
 #アプリケーションを作成
