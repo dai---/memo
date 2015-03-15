@@ -303,6 +303,7 @@ bind -n S-left select-pane -
 Lkbind -n S-down select-pane -D
 bind -n S-up select-pane -U
 bind -n S-right select-pane -R
+
 ##################
 
 #tmux起動
