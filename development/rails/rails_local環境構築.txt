@@ -393,8 +393,6 @@ vi ~/.zprofile     #zsh使ってる場合はこっち。$PATHに以下を追加
 /usr/local/rbenv/versions/2.2.0/bin
 
 
-
-
 #.zprofileの編集
 vi ~/.zprofile
 #以下の行を追加してpathを通して、vimとかprofile.dにかいたrbenvとかを使えるようにする
@@ -531,6 +529,8 @@ test:
   username: <rails_app_name>
   password: <password>
 
+#bundle installしてmysqlのエラーがでた場合は
+sudo yum -y install mysql-devel
 
 #データベース作成(development/test/productionのすべてを作成)
 bundle exec rake db:create:all
