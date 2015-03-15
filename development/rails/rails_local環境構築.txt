@@ -1,5 +1,5 @@
 
-##【ホストOS】####################################################################
+##【ホストOS(windows)】####################################################################
 ・VirtualBoxインストール
 ・Vagrantインストール
 
@@ -18,27 +18,83 @@ vagrant up
 #ゲストOSにログイン
 vagrant ssh
 
+#WinSCPとputtyの設定
+id:vagrant
+pass:vagrant
+
 ##########################################################################
 
 ##【ゲストOS】####################################################################
 
+
+
+#リポジトリの追加
+#どのリポジトリを優先的に利用するか設定するためのパッケージをインストールします。
+sudo yum -y install yum-priorities
+#epel
+sudo yum -y localinstall http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+#remi
+sudo yum -y localinstall http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+#ius Python2.7, PHP5.5、Python3.3、Git 1.8など
+sudo yum -y localinstall http://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/ius-release-1.0-11.ius.centos6.noarch.rpm
+
+#sed -i 's/enabled=1/enabled=0/g' /etc/yum.repos.d/epel.repo　←　EPELリポジトリデフォルト無効化※RPMforgeリポジトリと競合するため
+
+#もろもろインストール
 sudo yum -y groupinstall "Development Tools"
 sudo yum -y install openssl-devel
 sudo yum -y install libffi-devel
 sudo yum -y install readline-devel
 sudo yum -y install sqlite-devel
-#mysqlのインストールはhttp://www.kakiro-web.com/linux/centos6-mysql-yum-repository-install.html
+sudo yum -y install --enablerepo=epel make gcc zlib-devel openssl-devel readline-devel ncurses-devel gdbm-devel db4-devel libffi-devel tk-devel libyaml-devel
+
+#nginx
+sudo vi /etc/yum.repos.d/nginx.repo
+#以下を入力
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/centos/$releasever/$basearch/
+gpgcheck=0
+enabled=1
+#nginxインストール
+sudo yum -y install nginx --enablerepo=nginx
+
+#MySQL 5.6インストール
+sudo yum -y localinstall https://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
+sudo yum -y install mysql-server --enablerepo=mysql56-community
 #or
-#epelとremiレポジトリを追加します。
-sudo rpm -ivh http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
-sudo rpm -ivh http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
-#mysqlのインストール
-sudo yum -y install mysql mysql-devel mysql-server
-sudo vi /etc/my.cnf #で
-character-set-server = utf8　#を追加
-service mysqld start　#とりあえず起動する
-service mysqld stop　#停止
-mysql_secure_installation　#passwordを聞かれるがまだ設定してないので空白Enter　以降すべてYES
+#sudo yum -y install mysql mysql-devel mysql-server
+sudo vi /etc/my.cnf #で[mysqld]の下に
+[mysqld]
+character-set-server=utf8
+explicit_defaults_for_timestamp=true
+default-storage-engine = InnoDB
+#エラーログの確認
+log-error=/var/log/mysql/error.log
+#クエリログを表示
+general_log=1
+general_log_file=/var/log/mysql/query.log
+log_output=FILE
+#　バイナリログを残す日数
+expire_logs_days = 2
+[client]
+default-character-set = utf8
+[mysqldump]
+default-character-set = <span class="goog_qs-tidbit goog_qs-tidbit-0">utf8
+[mysql]
+default-character-set = utf8
+#を追加
+
+#こんなエラーがでたら Fatal error: Can't open and lock privilege tables: Table 'mysql.user' doesn't exist
+mysql_install_db --datadir=/var/lib/mysql --user=mysql
+
+sudo service mysqld start #とりあえず起動する
+sudo /etc/init.d/mysql start #とりあえず起動する
+sudo service mysqld stop #停止
+sudo /etc/init.d/mysql stop #停止
+
+mysqladmin -u root password 'new-password'
+mysql_secure_installation　#passwordを聞かれたら上記で入力したパスワードを入力し、以降すべてYESで再度rootのパスワードを変更する
 mysql -u root -p　#で接続
 mysql> status #で確認。なにを？まぁ起動してるかどうか的なやつかなぁ
 
@@ -47,85 +103,31 @@ sudo yum -y install sqlite
 sudo yum -y install sqlite-devel
 
 #自動起動
-chkconfig mysqld on
-service mysqld start
+sudo chkconfig mysqld on
+sudo service mysqld start
 service mysqld stop
 
-#or
-sudo yum -y install --enablerepo=epel make gcc zlib-devel openssl-devel readline-devel ncurses-devel gdbm-devel db4-devel libffi-devel tk-devel libyaml-devel
 
-#sudoers の設定
-sudo visudo -f /etc/sudoers.d/00_base
-#以下2行を追加
-Defaults !secure_path
-Defaults env_keep += "PATH RBENV_ROOT"
-
-#rbenvをシステムワイドにインストール
-cd /usr/local
-sudo git clone git://github.com/sstephenson/rbenv.git rbenv
-
-#ruby-buildインストール
-sudo mkdir /usr/local/rbenv/plugins
-cd /usr/local/rbenv/plugins
-sudo git clone git://github.com/sstephenson/ruby-build.git
-cd ruby-build
-sudo ./install.sh
-
-#rbenvのディレクトリを作成
-sudo mkdir /usr/local/rbenv/shims /usr/local/rbenv/versions
-#rbenvグループを追加
-sudo groupadd rbenv
-#/usr/local/rbenvを再起的にrbenvグループに変更
-sudo chgrp -R rbenv /usr/local/rbenv
-#/usr/local/rbenvを再起的に権限変更
-sudo chmod -R g+rwxXs /usr/local/rbenv
-
-
-#パスを通す。
-sudo vi /etc/profile.d/rbenv.sh
-#以下3行を追加
-export RBENV_ROOT="/usr/local/rbenv"
-export PATH="/usr/local/rbenv/bin:$PATH"
-eval "$(rbenv init -)"
-#シェルの再起動
-exec $SHELL -1
-#or
-source /etc/profile
-
-#rubyのインストール
-#ここからsudo suしないとエラーになる
-#このときrootであることに注意(一般ユーザでsudo rbenv install 2.0.0-p0とすると/root/.rbenv/下にインストールされ共有できない).
-rbenv install -l
-rbenv install 2.2.0
-sudo rbenv global 2.2.0
-sudo rbenv rehash
-
-#bundlerだけはコマンドラインでインストールする。
-gem install bundler
-rbenv rehash
-#バージョン確認
-bundle -v
-#bundleのインストール先確認
-/usr/local/rbenv/versions/2.2.0/bin/bundler -v #Bundler version 1.8.3とでる
 
 #zshのインストール###################################
+#とりあえずインストール vagrantだったら今まの手順の中でインストールしてるかも。
+sudo yum -y install ncurses-devel
+
 mkdir -p ~/work/zsh
 cd ~/work/zsh
 #いや、なんかうまくいかないので、yumでインストールしようと思ったけどやめた。
 #sudo yum -y install zsh
 #sudo yum -y remove zsh
 
-#とりあえずインストール vagrantだったら今まの手順の中でインストールしてるかも。
-sudo yum -y install ncurses-devel
-
 # http://zsh.sourceforge.net/Arc/source.html
 #に最新版があるらしいです。参考:http://gitpub.hatenablog.com/entry/2013/07/07/182014
 wget http://downloads.sourceforge.net/project/zsh/zsh/5.0.7/zsh-5.0.7.tar.gz?r=http%3A%2F%2Fzsh.sourceforge.net%2FArc%2Fsource.html&ts=1425580779&use_mirror=jaist
+#途中で止まる？けどEnter
 
 #解凍・インストール　参考：http://memo.yomukaku.net/entries/jDqwgQQ
 tar zxvf zsh-5.0.7.tar.gz
 cd zsh-5.0.7
-./configue
+./configure
 make
 sudo make install
 
@@ -156,6 +158,241 @@ ZSH_THEME="steeef"
 
 #シェルがzshになったか確認
 echo $SHELL
+#なっていなかったらログアウトして、再度ログイン
+
+#gitのバージョンアップ
+sudo yum -y remove git #これまでのコマンドではいってしまったgitをアンインストール
+sudo yum -y install curl-devel expat-devel gettext-devel openssl-devel zlib-devel perl-ExtUtils-MakeMaker
+sudo yum -y install zlib-devel.x86_64
+sudo yum -y install perl-ExtUtils-MakeMaker
+mkdir -p ~/work/git
+cd ~/work/git
+wget https://www.kernel.org/pub/software/scm/git/git-2.3.2.tar.gz
+tar -zxf git-2.3.2.tar.gz
+cd git-2.3.2
+sudo make prefix=/usr/local all
+sudo make prefix=/usr/local install
+git --version
+#pathが通っていないので、zsh: command not foundと言われる。.zshrcのexport PATH=$HOME/bin:/usr/local/bin:$PATHをコメントアウト
+vi ~/.zshrc
+#.zprofileに以下を追加
+vi ~/.zprofile
+export PATH=$PATH:$HOME/bin:/usr/sbin:/sbin:/usr/local/sbin:
+
+#tmuxのインストール
+#まだはいっていなければインストール
+sudo yum -y install wget gcc make
+sudo yum -y install ncurses ncurses-devel
+#tmuxのコンパイルの為のlibeventのインストール
+mkdir -p ~/work/tmux
+cd ~/work/tmux
+sudo wget https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz
+tar xvzf libevent-2.0.21-stable.tar.gz
+cd libevent-2.0.21-stable
+./configure
+make
+sudo make install
+#もしかしたらrootにならないとだめかも
+sudo su
+sudo echo "/usr/local/lib" > /etc/ld.so.conf.d/libevent.conf
+sudo ldconfig
+#tmuxのインストール
+wget http://downloads.sourceforge.net/tmux/tmux-1.9a.tar.gz
+tar xvzf tmux-1.9a.tar.gz
+cd tmux-1.9a
+./configure
+sudo make
+sudo make install
+#tmuxの設定ファイルを編集する
+vim ~/.tmux.conf
+#以下を追加
+# Prefix key
+# unbind C-b
+# set -g prefix C-t
+# bind C-t send-prefix
+# # reload config
+# bind C-r source-file ~/.tmux.conf \; display "~/.tmux.conf is reloaded!"
+
+##【.tmux.conf】######################################
+# Prefixを＜Ctrl + b＞から＜Ctrl + t＞に変えます。
+# 例：新しいウィンドウを開くときは＜Ctrl + t＞＜c＞と押すことになります。
+# "t"以外の好きなキーにしても問題ありません。他の操作と重複しないようにしましょう。
+set-option -g prefix C-t
+
+# デフォルトのPrefix(C-b)を解除
+unbind C-b
+
+# View
+# ステータスライン更新間隔(秒)
+set -g status-interval 5
+set -g status-left-length 50
+set -g status-right-length 100
+
+set-option -g set-titles on
+# www1.hoge.com→www1のみ表示。
+set-option -g set-titles-string "@#(hostname | sed 's/\\\\..*//')"
+
+# ステータスラインカスタム関連
+set -g status-bg black
+set -g status-fg white
+set -g status-attr dim
+# 左部:whoami@hostname
+set -g status-left '#[fg=green,bold][#20(whoami)]#[default]'
+# 右部:[LANG, 起動時間, ロードアベレージ, メモリ使用率, 現在時刻]
+set -g status-right '[ #[fg=white,bold]#(echo $LANG)#[default] < #[fg=blue]up #(pc-running-time)#[default] < #[fg=magenta](#(loadaverage)) Mem #(used-mem)%%#[default] < #[fg=red,bold]%y/%m/%d(%a)%H:%M:%S#[default] ]'
+set -g message-attr bold
+set -g message-fg white
+set -g message-bg red
+
+set -g pane-active-border-fg white
+set -g pane-active-border-bg black
+
+set-window-option -g mode-bg white
+set-window-option -g mode-fg black
+set-window-option -g window-status-bg black
+set-window-option -g window-status-fg white
+set-window-option -g window-status-current-bg green
+set-window-option -g window-status-current-fg black
+set-window-option -g window-status-current-attr bold
+
+# Option
+# utf8有効
+set-window-option -g utf8 on
+# コピー、選択モードのキーバインドvi/emacs
+set-window-option -g mode-keys vi
+# マウス有効。MacのTerminal.appでは効かず…
+set-option -g mouse-select-pane on
+# ウィンドウ等の番号基準値
+set-option -g base-index 1
+
+# 設定リロード
+bind r source-file ~/.tmux.conf
+# ウィンドウ選択画面
+bind Space choose-window
+# ペイン番号表示
+bind i display-panes
+
+# ウィンドウの移動
+# Prefix(ここではCtrl+t)を連続入力することでウィンドウを移動させます。
+bind C-t next-window
+
+# ウィンドウを(ペインに)分割
+# ＜Prefix＞＜v＞、＜Prefix＞＜h＞と入力するだけで分割できるようにします。
+bind v split-window -v
+bind h split-window -h
+
+# ペインのサイズ変更をvim風にする
+# ＜Prefix＞＜Ctrl + { h | i | j | k }＞
+# ＜Ctrl + { h | i | j | k }＞は連続して入力可能。
+# 1回押すごとに5行(列)境界を移動させる。
+bind -r C-h resize-pane -L 5
+bind -r C-l resize-pane -R 5
+bind -r C-j resize-pane -D 5
+bind -r C-k resize-pane -U 5
+
+# ペインの移動1(Vim風にする)
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# ペインの移動2
+# Shift + 上下左右でペインを移動できるようにする。(＜Prefix＞不要)
+# 行頭に"bind -n"をつけるとPrefixが不要になる。
+bind -n S-left select-pane -
+Lkbind -n S-down select-pane -D
+bind -n S-up select-pane -U
+bind -n S-right select-pane -R
+##################
+
+#tmux起動
+tmux
+#.zprofileに以下を追加
+# TMUX Settings
+if [ -z $TMUX ]; then
+  if $(tmux has-session); then
+    tmux attach
+  else
+    tmux
+  fi
+fi
+#tmuxの使い方
+tmux #で起動
+# 新しいウィンドウを開く ＜Ctrl + t＞＜c＞ ※ "Ctrl"を押しながら"t"を押して離す。続けて"c"を押す。
+# アクティブかどうかはウィンドウ名右の"-"、"*"を見て判断します。
+# ウィンドウの移動 ＜Ctrl + t＞＜p＞ 又は ＜Ctrl + b＞＜n＞
+# ウィンドウを横に分割 ＜Ctrl + t＞＜"＞
+# ウィンドウを縦に分割 ＜Ctrl + t＞＜%＞
+# ウィンドウ内のペインを確認
+# ＜Ctrl + t＞:display-panes
+# ※ "Ctrl"を押しながら"t"を押して離す。続けて":display-panes"と入力してEnter。
+# ※ ":"まで入力した時点でウィンドウの最下部に文字列が入力できるようになります。
+# 操作を忘れた場合は下記でコマンドのリストを表示することができます。
+# ＜Prefix＞＜?＞
+# 時間の表示
+# ＜Ctrl + t＞＜t＞
+
+
+#rbenvをインストールする為の準備
+#sudoers の設定
+sudo visudo -f /etc/sudoers.d/00_base
+#以下2行を追加
+Defaults !secure_path
+Defaults env_keep += "PATH RBENV_ROOT"
+
+#rbenvをシステムワイドにインストール
+cd /usr/local
+sudo git clone git://github.com/sstephenson/rbenv.git rbenv
+
+#ruby-buildインストール
+sudo mkdir /usr/local/rbenv/plugins
+cd /usr/local/rbenv/plugins
+sudo git clone git://github.com/sstephenson/ruby-build.git
+cd ruby-build
+sudo ./install.sh #なにも表示されない。。。けどちゃんと処理してるから大丈夫
+
+#rbenvのディレクトリを作成
+sudo mkdir /usr/local/rbenv/shims /usr/local/rbenv/versions
+#rbenvグループを追加
+sudo groupadd rbenv
+#/usr/local/rbenvを再起的にrbenvグループに変更
+sudo chgrp -R rbenv /usr/local/rbenv
+#/usr/local/rbenvを再起的に権限変更
+sudo chmod -R g+rwxXs /usr/local/rbenv
+
+
+#パスを通す。
+sudo vi /etc/profile.d/rbenv.sh
+#以下3行を追加
+export RBENV_ROOT="/usr/local/rbenv"
+export PATH="/usr/local/rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+#設定値を反映
+source /etc/profile
+
+#rubyのインストール
+#ここからsudo suしないとエラーになる
+#このときrootであることに注意(一般ユーザでsudo rbenv install 2.0.0-p0とすると/root/.rbenv/下にインストールされ共有できない).
+rbenv install -l
+sudo rbenv install 2.2.1
+sudo rbenv global 2.2.1
+sudo rbenv rehash
+
+#bundlerだけはコマンドラインでインストールする。
+sudo gem install bundler
+sudo rbenv rehash
+#バージョン確認
+bundle -v
+#bundleのインストール先確認
+/usr/local/rbenv/versions/2.2.0/bin/bundler -v #Bundler version 1.8.3とでる
+
+bundle -v　#そんなコマンドないと言われる。
+vi ~/.bash_profile　#の$PATHに以下を追加
+vi ~/.zprofile     #zsh使ってる場合はこっち。$PATHに以下を追加
+/usr/local/rbenv/versions/2.2.0/bin
+
+
+
 
 #.zprofileの編集
 vi ~/.zprofile
@@ -164,6 +401,8 @@ for i in /etc/profile.d/*.sh ; do
     [ -r $i ] && source $i
 done
 export PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/rbenv/versions/2.2.0/bin
+
+#一度ログアウトして、再度ログイン
 
 #pathの確認
 echo $PATH
@@ -180,13 +419,6 @@ echo $PATH
 :/sbin
 :/usr/local/rbenv/versions/2.2.0/bin
 
-#.zshrcの編集
-vi ~/.zshrc
-#デフォルトで以下の設定になっているので
-export PATH=$HOME/bin:/usr/local/bin:$PATH
-#以下の設定に修正
-export PATH=$HOME/bin:$PATH
-#これでダブってた/usr/local/binが消えた。
 
 ###################################
 
@@ -206,10 +438,11 @@ sudo yum list installed | grep make
 sudo yum list installed | grep gcc
 
 #インストールされていない場合はそれぞれインストール。
-sudo yum -y install mercurial
-sudo yum -y install ncurses-devel
-sudo yum -y install make
-sudo yum -y install gcc
+# sudo yum -y install mercurial
+# sudo yum -y install ncurses-devel
+# sudo yum -y install make
+# sudo yum -y install gcc
+sudo yum -y install mercurial ncurses-devel make gcc
 
 #vimのインストール 参考：http://qiita.com/SOJO/items/9d6a65f3da941c49da36
 cd /usr/local/src
@@ -237,12 +470,9 @@ vim
 
 ###################################
 
-#userになってパスを通す
-exit
-bundle -v　#そんなコマンドないと言われる。
-vi ~/.bash_profile　#の$PATHに以下を追加
-vi ~/.zprofile     #zsh使ってる場合はこっち。$PATHに以下を追加
-/usr/local/rbenv/versions/2.2.0/bin
+
+
+
 
 #~/.bashrc　or ~/.zshrcに以下を追加
 alias viv='vi ~/.vimrc'
@@ -343,11 +573,47 @@ git branch mac
 
 ##########################################################################
 
+##【サンプルアプリケーション】####################################################################
+
+bundle exec rails g scaffold ItemGroup name:string
+bundle exec rails g scaffold Item  name:string value:integer item_group:references
+
+##########################################################################
+
+##【sql】####################################################################
+
+CREATE TABLE db_name.app_groups (
+                                  id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                                  FOREIGN KEY (co_id) REFERENCES cos(id)
+                                  status int(11),
+                                  name varchar(255),
+                                  created_at datetime NOT NULL,
+                                  updated_at datetime NOT NULL,
+                                  deleted_at datetime,
+                                  FOREIGN KEY (operator_id) REFERENCES operator(id)
+                               );
+
+CREATE TABLE db_name.app_groups (
+                                  id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                                  co_id int(11),
+                                  status int(11),
+                                  name varchar(255),
+                                  created_at datetime NOT NULL,
+                                  updated_at datetime NOT NULL,
+                                  deleted_at datetime,
+                                  operator_id int(11),
+                                  FOREIGN KEY (co_id) REFERENCES cos(id),
+                                  FOREIGN KEY (operator_id) REFERENCES operator(id)
+                               ) ENGINE=InnoDB;
+
+##########################################################################
 
 
+##【WEBRick起動の仕方】####################################################################
 
+rails server -p80 -d
 
-
+##########################################################################
 
 
 
