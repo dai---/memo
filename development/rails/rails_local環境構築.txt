@@ -529,7 +529,7 @@ test:
   username: <rails_app_name>
   password: <password>
 
-#bundle installしてmysqlのエラーがでた場合は
+#bundle installしてmysql2のエラーがでた場合は
 sudo yum -y install mysql-devel
 
 #データベース作成(development/test/productionのすべてを作成)
