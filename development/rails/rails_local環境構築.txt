@@ -373,15 +373,18 @@ bind k kill-pane
 
 # ウィンドウを(ペインに)分割
 # ＜Prefix＞＜v＞、＜Prefix＞＜h＞と入力するだけで分割できるようにします。
+unbind '"'
+unbind '%'
 unbind v
 unbind h
-unbind -
-unbind |
+unbind '\'
+unbind '|'
+unbind '-'
 bind v split-window -v
 bind h split-window -h
-bind \ split-window -v
-bind | split-window -h
-bind - split-window -v
+bind '\' split-window -h
+bind '|' split-window -h
+bind '-' split-window -v
 
 # ペインのサイズ変更をvim風にする
 # ＜Prefix＞＜Ctrl + { h | i | j | k }＞
