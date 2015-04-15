@@ -70,6 +70,7 @@ NeoBundle 'nanotech/jellybeans.vim'
 NeoBundle 'w0ng/vim-hybrid'
 NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'vim-scripts/Wombat'
+NeoBundle 'tomasr/molokai'
 
 " 余談: neocompleteは合わなかった。ctrl+pで補完するのが便利
 
@@ -211,9 +212,10 @@ syntax on
 " カラースキーマの指定
 "colorscheme desert
 "colorscheme jellybeans
-colorscheme hybrid
+"colorscheme hybrid
 "colorscheme solarized
 "colorscheme Wombat
+colorscheme molokai
 
 " 行番号の色
 highlight LineNr ctermfg=darkyellow
@@ -221,6 +223,11 @@ highlight LineNr ctermfg=darkyellow
 
 " vimを立ち上げたときに、自動的にvim-indent-guidesをオンにする
 let g:indent_guides_enable_on_vim_startup = 1
+let g:indent_guides_auto_colors = 0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd   ctermbg=8
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=235
+let g:indent_guides_guide_size = 1
+let g:indent_guides_start_level = 2
 
 " grep検索の実行後にQuickFix Listを表示する
 autocmd QuickFixCmdPost *grep* cwindow
