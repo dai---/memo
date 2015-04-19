@@ -46,7 +46,7 @@ ZSH_THEME="steeef"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git　zsh-syntax-highlighting)
 
 # User configuration
 
@@ -115,6 +115,11 @@ bindkey "^N" history-beginning-search-forward-end
 
 # alias
 #zstyle ':completion:*' list-colors 'di=34' 'ln=35' 'so=32' 'ex=31' 'bd=46;34' 'cd=43;34'
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+alias g='git'
 alias vi=vim # vi で vim 起動
 alias viv='vi ~/.vimrc'
 alias setv='source ~/.vimrc'
@@ -128,6 +133,119 @@ alias bedb='bundle exec rails db'
 alias bers='bundle exec rails s -b 192.168.33.10'
 alias bean='bundle exec annotate'
 alias berr='bundle exec rake routes'
+
+alias -g G='| grep'
+alias -g X='| xargs'
+alias -g L='| less'
+alias -g H='| head'
+alias -g T='| tail'
+alias -g W='| wc'
+alias -g S='| sort'
+
+###########################################################
+# 履歴管理
+###########################################################
+# 履歴ファイルの保存先
+export HISTFILE=${HOME}/.zsh_history
+
+# メモリに保存される履歴の件数
+export HISTSIZE=1000
+
+# 履歴ファイルに保存される履歴の件数
+export SAVEHIST=100000
+
+# 色の設定　色が気に入らないからコメントアウト
+# export TERM=xterm-256color
+
+# ヒストリに追加されるコマンド行が古いものと同じなら古いものを削除
+setopt hist_ignore_all_dups
+
+# スペースで始まるコマンド行はヒストリリストから削除
+setopt hist_ignore_space
+
+# ヒストリを呼び
+# 出してから実行する間に一旦編集可能
+setopt hist_verify
+
+# 余分な空白は詰めて記録
+setopt hist_reduce_blanks
+
+# 古いコマンドと同じものは無視
+setopt hist_save_no_dups
+
+# historyコマンドは履歴に登録しない
+setopt hist_no_store
+
+# 補完時にヒストリを自動的に展開
+setopt hist_expand
+
+# 履歴をインクリメンタルに追加
+setopt inc_append_history
+
+# インクリメンタルからの検索
+bindkey "^R" history-incremental-search-backward
+bindkey "^S" history-incremental-search-forward
+
+
+# 開始と終了を記録
+setopt EXTENDED_HISTORY
+
+#全履歴を一覧表示す
+function history-all { history -E 1 }
+
+#historyの選択できるように設定する「Ctrl-x ;」で履歴検索
+# function mkcd(){mkdir -p $1 && cd $1}
+# source /home/d_tsushima/zsh_plugin/zaw/zaw.zsh
+
+###########################################################
+
+###########################################################
+# コマンド履歴pecoの設定
+###########################################################
+function peco-select-history() {
+    local tac
+    if which tac > /dev/null; then
+        tac="tac"
+    else
+        tac="tail -r"
+    fi
+
+    BUFFER=$(\history -n 1 | \
+        eval $tac | \
+        peco --query "$LBUFFER")
+    CURSOR=$#BUFFER
+    zle clear-screen
+}
+zle -N peco-select-history
+bindkey '^r' peco-select-history
+
+###########################################################
+
+###########################################################
+# よく使うディレクトリをブックマークする zsh のプラグイン(cd-bookmark)の設定
+###########################################################
+fpath=($HOME/.oh-my-zsh/custom/plugins/cd-bookmark(N-/) $fpath)
+autoload -Uz cd-bookmark
+alias cdb='cd-bookmark'
+alias cdba='cd-bookmark -a'
+alias cdbl='cd-bookmark -l'
+alias cdbe='cd-bookmark -e'
+# cdba root でカレントディレクトリをrootという名前で登録
+# cdb root でrootに登録したパスに移動できる
+# cdbで登録されている一覧を表示する
+# cdblで登録されているブックマーク一覧を表示する(上と同じ)
+# cdbeで登録されているブックマークを管理しているファイルをviで編集できる
+# cdb -hでヘルプを参照
+###########################################################
+
+###########################################################
+# <app_root>ディレクトリにコマンド一発で移動するプラグイン(cd-gitroot)の設定
+###########################################################
+fpath=($HOME/.oh-my-zsh/custom/plugins/cd-gitroot(N-/) $fpath)
+autoload -Uz cd-gitroot
+alias cdroot='cd-gitroot'
+###########################################################
+
 
 [ -f ~/.zshrc.include ] && source ~/.zshrc.include # 設定ファイルのinclude
 

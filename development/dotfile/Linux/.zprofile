@@ -5,5 +5,5 @@ for i in /etc/profile.d/*.sh ; do
     [ -r $i ] && source $i
 done
 
-export PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/rbenv/versions/2.2.0/bin
+export PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/rbenv/versions/2.2.0/bin:$HOME/work/download/local/bin
 
