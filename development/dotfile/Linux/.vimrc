@@ -205,6 +205,7 @@ set smarttab
 
 " カーソルを行頭、行末で止まらないようにする
 set whichwrap=b,s,h,l,<,>,[,]
+set backspace=start,eol,indent
 
 " 構文毎に文字色を変化させる
 syntax on
@@ -218,16 +219,48 @@ syntax on
 colorscheme molokai
 
 " 行番号の色
+"highlight LineNr ctermfg=darkyellow
+"highlight LineNr ctermfg=white
+"highlight LineNr ctermfg=darkcyan
+"highlight LineNr ctermfg=lightred
+"highlight LineNr ctermfg=yellow
 highlight LineNr ctermfg=darkyellow
 """"""""""""""""""""""""""""""
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-indent-guidesプラグインの設定
+"""""""""""""""""""""""""""""""""""""""""""""""""""
 " vimを立ち上げたときに、自動的にvim-indent-guidesをオンにする
 let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_auto_colors = 0
-autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd   ctermbg=8
-autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=235
-let g:indent_guides_guide_size = 1
 let g:indent_guides_start_level = 2
+" 自動カラーを無効にする
+let g:indent_guides_auto_colors = 0
+
+" ガイドの幅
+let g:indent_guides_guide_size=1
+
+" ハイライト色の変化の幅
+let g:indent_guides_color_change_percent=30
+
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd   ctermbg=8
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=235
+
+" 奇数のインデントカラー
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd   ctermbg=110
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#262626   ctermbg=gray
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#262626   ctermbg=cyan
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#262626   ctermbg=darkmagenta
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd guibg=#3c3c3c   ctermbg=darkcyan
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#262626   ctermbg=lightgray
+" 偶数のインデントカラー
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=140
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#3c3c3c   ctermbg=darkgray
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#3c3c3c   ctermbg=magenta
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#3c3c3c   ctermbg=darkcyan
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  guibg=#262626   ctermbg=darkmagenta
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#3c3c3c   ctermbg=darkgray
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " grep検索の実行後にQuickFix Listを表示する
 autocmd QuickFixCmdPost *grep* cwindow
@@ -235,7 +268,14 @@ autocmd QuickFixCmdPost *grep* cwindow
 " コピペとかしたときに勝手にコメントアウトしない
 autocmd FileType * setlocal formatoptions-=ro
 
-
+" ファイルをまたいだ時にヤンクできるコピー行数設定(1000行)
+set viminfo='20,\"10000
+" 自動的に改行がはいるのを無効化
+set textwidth=0
+" カーソルがある行に下線を引く
+" set cursorline
+" 行の折り返し表示をやめる
+set nowrap
 
 
 " http://blog.remora.cx/2010/12/vim-ref-with-unite.html
