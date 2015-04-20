@@ -7,11 +7,16 @@ filetype off
 """"""""""""""""""""""""""""""
 " プラグインのセットアップ
 """"""""""""""""""""""""""""""
-if has('vim_starting')
-  set nocompatible               " Be iMproved
+" :NeoBundleInstall プラグインの新規インストール
+" :NeoBundleUpdate  インストール済みのプラグインのアップデート
+" :NeoBundleClean vimrcにないインストール済みのプラグインを掃除
+" :NeoBundleSource  プラグインの読み込み直し、後述の NeoBundleLasy と組み合わせたりする
 
-  " Required:
-  set runtimepath+=~/.vim/bundle/neobundle.vim/
+if has('vim_starting')
+set nocompatible " Be iMproved
+
+" Required:
+set runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
 
 " Required:
@@ -60,7 +65,8 @@ NeoBundle 'tomtom/tcomment_vim'
 
 " いろいろな色付けしてくれたり、インデントしてくれたりするらしい。
 NeoBundle 'hail2u/vim-css3-syntax'
-NeoBundle 'taichouchou2/html5.vim'
+"インストールでエラーになるのでコメントアウト
+"NeoBundle 'taichouchou2/html5.vim'
 "インストールでエラーになるのでコメントアウト
 "NeoBundle 'taichouchou2/vim-javascript'
 NeoBundle 'kchmck/vim-coffee-script'
@@ -140,9 +146,38 @@ set laststatus=2
 
 " ステータス行に表示させる情報の指定(どこからかコピペしたので細かい意味はわかっていない)
 " 閉じカッコとかが自動で入力される設定がされてるとちゃんと貼り付けられない可能性があるので気をつける
-set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V%8P
+"set statusline=%<%f\ %m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).']['.&ff.']'}%=%l,%c%V%8P
 " ステータス行に現在のgitブランチを表示する
-"
+set statusline=%<[%n]%m%r%h%w%{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}%y\ %F%=%l,%c%V%8P
+" ステータスラインの詳細表示設定
+  set statusline=%<     " 行が長すぎるときに切り詰める位置
+  set statusline+=[%n]  " バッファ番号
+  set statusline+=%m    " %m 修正フラグ
+  set statusline+=%r    " %r 読み込み専用フラグ
+  set statusline+=%h    " %h ヘルプバッファフラグ
+  set statusline+=%w    " %w プレビューウィンドウフラグ
+  set statusline+=%{'['.(&fenc!=''?&fenc:&enc).':'.&ff.']'}  " fencとffを表示
+  set statusline+=%y    " バッファ内のファイルのタイプ
+  set statusline+=\     " 空白スペース
+if winwidth(0) >= 130
+  set statusline+=%F    " バッファ内のファイルのフルパス
+else
+  set statusline+=%t    " ファイル名のみ
+endif
+  set statusline+=%=    " 左寄せ項目と右寄せ項目の区切り
+  set statusline+=%{fugitive#statusline()}  " Gitのブランチ名を表示
+  set statusline+=\ \   " 空白スペース2個
+  set statusline+=%1l   " 何行目にカーソルがあるか
+  set statusline+=/
+  set statusline+=%L    " バッファ内の総行数
+  set statusline+=,
+  set statusline+=%c    " 何列目にカーソルがあるか
+  set statusline+=%V    " 画面上の何列目にカーソルがあるか
+  set statusline+=\ \   " 空白スペース2個
+  set statusline+=%P    " ファイル内の何％の位置にあるか
+
+
+
 " ウインドウのタイトルバーにファイルのパス情報等を表示する
 set title
 
@@ -205,6 +240,7 @@ set smarttab
 
 " カーソルを行頭、行末で止まらないようにする
 set whichwrap=b,s,h,l,<,>,[,]
+
 set backspace=start,eol,indent
 
 " 構文毎に文字色を変化させる
@@ -216,7 +252,8 @@ syntax on
 "colorscheme hybrid
 "colorscheme solarized
 "colorscheme Wombat
-colorscheme molokai
+colorscheme wombat
+"colorscheme molokai
 
 " 行番号の色
 "highlight LineNr ctermfg=darkyellow
@@ -225,26 +262,23 @@ colorscheme molokai
 "highlight LineNr ctermfg=lightred
 "highlight LineNr ctermfg=yellow
 highlight LineNr ctermfg=darkyellow
+"highlight LineNr ctermfg=grey
 """"""""""""""""""""""""""""""
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-indent-guidesプラグインの設定
-"""""""""""""""""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vimを立ち上げたときに、自動的にvim-indent-guidesをオンにする
 let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_start_level = 2
+
+" vim-indent-guides
+" ガイドをスタートするインデントの量
+let g:indent_guides_start_level=2
+"let g:indent_guides_start_level=0
 " 自動カラーを無効にする
-let g:indent_guides_auto_colors = 0
-
-" ガイドの幅
-let g:indent_guides_guide_size=1
-
-" ハイライト色の変化の幅
-let g:indent_guides_color_change_percent=30
-
-"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd   ctermbg=8
-"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  ctermbg=235
-
+let g:indent_guides_auto_colors=0
 " 奇数のインデントカラー
 "autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd   ctermbg=110
 "autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#262626   ctermbg=gray
@@ -259,6 +293,10 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#262626   ctermbg=dark
 autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#3c3c3c   ctermbg=darkcyan
 "autocmd VimEnter,Colorscheme * :hi IndentGuidesEven  guibg=#262626   ctermbg=darkmagenta
 "autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#3c3c3c   ctermbg=darkgray
+" ハイライト色の変化の幅
+let g:indent_guides_color_change_percent=30
+" ガイドの幅
+let g:indent_guides_guide_size=1
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -276,6 +314,7 @@ set textwidth=0
 " set cursorline
 " 行の折り返し表示をやめる
 set nowrap
+
 
 
 " http://blog.remora.cx/2010/12/vim-ref-with-unite.html
