@@ -86,16 +86,6 @@ bindkey -e # emacsライクなキーバインド
 export LANG=ja_JP.UTF-8 # 日本語環境
 export EDITOR=vim # エディタはvi
 
-# 補完
-autoload -U compinit # 補完機能
-compinit -u # 補完を賢くする
-setopt autopushd # cdの履歴表示、cd - で一つ前のディレクトリへ
-setopt pushd_ignore_dups # 同ディレクトリを履歴に追加しない
-setopt auto_cd # ディレクトリ名のみでcd
-setopt list_packed # リストを詰めて表示
-setopt list_types # 補完一覧をファイル種別に表示
-setopt correct # コマンドのスペルチェックを有効に
-
 # 履歴
 HISTFILE=~/.zsh_history # historyファイル
 HISTFILESIZE=1000000
@@ -244,6 +234,19 @@ alias cdbe='cd-bookmark -e'
 fpath=($HOME/.oh-my-zsh/custom/plugins/cd-gitroot(N-/) $fpath)
 autoload -Uz cd-gitroot
 alias cdroot='cd-gitroot'
+###########################################################
+
+###########################################################
+# 補完
+###########################################################
+autoload -U compinit # 補完機能
+compinit -u # 補完を賢くする
+setopt autopushd # cdの履歴表示、cd - で一つ前のディレクトリへ
+setopt pushd_ignore_dups # 同ディレクトリを履歴に追加しない
+setopt auto_cd # ディレクトリ名のみでcd
+setopt list_packed # リストを詰めて表示
+setopt list_types # 補完一覧をファイル種別に表示
+setopt correct # コマンドのスペルチェックを有効に
 ###########################################################
 
 
