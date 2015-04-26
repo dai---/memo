@@ -1,5 +1,8 @@
 
 
+#HOMEディレクトリからaaaでgrep検索
+find ~/ -type f | xargs grep hoge
+
 #カレントディレクトリの拡張子がerbのファイルの中からaaaでgrep検索
 find . -name "*.erb" | xargs grep "aaa"
 
