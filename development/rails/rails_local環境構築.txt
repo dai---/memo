@@ -22,9 +22,91 @@ vagrant ssh
 id:vagrant
 pass:vagrant
 
+# puttyの設定 putty.ini
+Font="Consolas"
+FontIsBold=0
+FontCharSet=0
+FontHeight=12
+FontQuality=3
+FontVTMode=4
+UseSystemColours=0
+TryPalette=0
+ANSIColour=1
+Xterm256Colour=1
+BoldAsColour=1
+Colour0="212,212,212"
+Colour1="255,255,255"
+Colour2="45,45,45"
+Colour3="63,63,63"
+Colour4="0,0,0"
+Colour5="162,223,169"
+Colour6="45,45,45"
+Colour7="0,0,0"
+Colour8="231,126,126"
+Colour9="231,126,126"
+Colour10="231,225,154"
+Colour11="255,255,128"
+Colour12="128,128,255"
+Colour13="70,70,255"
+Colour14="102,185,217"
+Colour15="141,203,226"
+Colour16="222,116,146"
+Colour17="0,166,166"
+Colour18="131,224,135"
+Colour19="114,216,132"
+Colour20="212,212,212"
+Colour21="255,255,255"
+RawCNP=0
+PasteRTF=0
+MouseIsXterm=0
+RectSelect=0
+MouseOverride=1
+
 ##########################################################################
 
 ##【ゲストOS】####################################################################
+
+# 時刻の設定
+# インストールされているか確認
+chkconfig | grep ntpd
+# なにも表示されなかったら
+sudo yum -y install ntp
+# インストールされたか確認
+chkconfig | grep ntpd
+# chkconfigの結果でntpがランレベル3,4,5でonになっていなければ
+sudo chkconfig ntpd on
+# ntpがランレベル3,4,5でonになっているか確認
+chkconfig | grep ntpd
+# 設定の書き換え
+sudo vi /etc/ntp.conf
+
+##/etc/ntp.conf##################
+# 時刻の狂いがどんなに大きくても動作停止はしないが、300秒以上狂っていたらSLEWせず一気にあわせる。
+tinker panic 0 step 300
+
+# 時刻の狂う傾向を統計して以下のファイルに記録する
+driftfile /var/lib/ntp/drift
+
+# サーバとしての動作は全面禁止
+restrict default kod nomodify notrap nopeer noquery
+restrict -6 default kod nomodify notrap nopeer noquery
+
+# ただしローカルホストからのアクセスは許可
+restrict 127.0.0.1
+restrict -6 ::1
+
+# NICTからのアクセス（返答パケット）を許可する
+restrict 133.243.238.163 mask 255.255.255.255 nomodify notrap noquery
+restrict 133.243.238.164 mask 255.255.255.255 nomodify notrap noquery
+restrict 133.243.238.243 mask 255.255.255.255 nomodify notrap noquery
+restrict 133.243.238.244 mask 255.255.255.255 nomodify notrap noquery
+
+# 同期先はNICT
+server ntp.nict.jp
+####################
+# サーバ再起動
+sudo service ntpd restart
+
 
 
 
@@ -468,6 +550,17 @@ git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
 vi ~/.vimrc
 #vimを起動して、プラグインをインストールするか聞かれるので、「y」を入力する
 vim
+
+#実際には使わないが保存するときにめんどくさいことになるので、バックアップ用のディレクトリを作成
+mkdir ~/.vim/backup
+
+# 透過させる場合
+vi ~/.vim/bundle/Zenburn/colors/zenburn.vim
+# で336行目あたり、
+hi Normal ctermfg=188 ctermbg=237
+# ↓
+hi Normal ctermfg=188
+# に変える
 
 ###################################
 
