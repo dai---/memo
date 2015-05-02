@@ -7,6 +7,11 @@ filetype off
 """"""""""""""""""""""""""""""
 " プラグインのセットアップ
 """"""""""""""""""""""""""""""
+" :NeoBundleInstall プラグインの新規インストール
+" :NeoBundleUpdate  インストール済みのプラグインのアップデート
+" :NeoBundleClean vimrcにないインストール済みのプラグインを掃除
+" :NeoBundleSource  プラグインの読み込み直し、後述の NeoBundleLasy と組み合わせたりする
+
 if has('vim_starting')
   set nocompatible               " Be iMproved
 
@@ -29,6 +34,9 @@ NeoBundle 'Shougo/neomru.vim'
 NeoBundle 'scrooloose/nerdtree'
 " Gitを便利に使う
 NeoBundle 'tpope/vim-fugitive'
+
+" カラースキーム一覧表示に Unite.vim を使う
+NeoBundle 'ujihisa/unite-colorscheme'
 
 " Rails向けのコマンドを提供する
 NeoBundle 'tpope/vim-rails'
@@ -70,6 +78,22 @@ NeoBundle 'nanotech/jellybeans.vim'
 NeoBundle 'w0ng/vim-hybrid'
 NeoBundle 'altercation/vim-colors-solarized'
 NeoBundle 'vim-scripts/Wombat'
+NeoBundle 'tomasr/molokai'
+NeoBundle 'chriskempson/vim-tomorrow-theme'
+NeoBundle 'sjl/badwolf'
+" zenburn カラースキーム
+NeoBundle 'vim-scripts/Zenburn'
+" mustang カラースキーム
+NeoBundle 'croaker/mustang-vim'
+" lucius カラースキーム
+NeoBundle 'vim-scripts/Lucius'
+" mrkn256 カラースキーム
+NeoBundle 'mrkn/mrkn256.vim'
+" railscasts カラースキーム
+NeoBundle 'jpo/vim-railscasts-theme'
+" pyte カラースキーム
+NeoBundle 'therubymug/vim-pyte'
+
 
 " 余談: neocompleteは合わなかった。ctrl+pで補完するのが便利
 
@@ -211,9 +235,22 @@ syntax on
 " カラースキーマの指定
 "colorscheme desert
 "colorscheme jellybeans
-colorscheme hybrid
+"colorscheme hybrid
 "colorscheme solarized
 "colorscheme Wombat
+"colorscheme wombat
+"colorscheme molokai
+"colorscheme Tomorrow-Night-Eighties
+"colorscheme Tomorrow-Night-Bright
+"colorscheme badwolf
+"highlight Normal ctermbg=none
+colorscheme zenburn
+"if ($ft=='ruby')
+"  colorscheme Tomorrow-Night
+"else
+"  colorscheme hybrid
+"endif
+
 
 " 行番号の色
 highlight LineNr ctermfg=darkyellow
@@ -222,13 +259,34 @@ highlight LineNr ctermfg=darkyellow
 " vimを立ち上げたときに、自動的にvim-indent-guidesをオンにする
 let g:indent_guides_enable_on_vim_startup = 1
 
+" ガイドをスタートするインデントの量
+let g:indent_guides_start_level=2
+" 自動カラー無効
+let g:indent_guides_auto_colors=0
+" 奇数番目のインデントの色
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=#444433 ctermbg=gray
+" 偶数番目のインデントの色
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=#333344 ctermbg=darkgray
+" ガイドの幅
+let g:indent_guides_guide_size = 1
+
+
 " grep検索の実行後にQuickFix Listを表示する
 autocmd QuickFixCmdPost *grep* cwindow
+
 
 " コピペとかしたときに勝手にコメントアウトしない
 autocmd FileType * setlocal formatoptions-=ro
 
 
+" ファイルをまたいだ時にヤンクできるコピー行数設定(1000行)
+set viminfo='20,\"10000
+" 自動的に改行がはいるのを無効化
+set textwidth=0
+" カーソルがある行に下線を引く
+" set cursorline
+" 行の折り返し表示をやめる
+set nowrap
 
 
 " http://blog.remora.cx/2010/12/vim-ref-with-unite.html
