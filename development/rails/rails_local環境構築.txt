@@ -1,0 +1,716 @@
+
+##【ホストOS(windows)】####################################################################
+・VirtualBoxインストール
+・Vagrantインストール
+
+#git bashで作業(vagrant sshができない為。)
+mkdir -p /work/vagrant/centos-rails6.5
+cd /work/vagrant/centos-rails6.5
+vagrant init chef/centos-6.5
+
+#Vagrantfileの編集
+# config.vm.network "private_network", ip: "192.168.33.10" のコメントを外す。
+#config.vm.network :"forwarded_port", guest: 3000, host: 3000
+#を追加しなくてもよい。
+
+#ゲストOS起動
+vagrant up
+#ゲストOSにログイン
+vagrant ssh
+
+#WinSCPとputtyの設定
+id:vagrant
+pass:vagrant
+
+# puttyの設定 putty.ini
+Font="Consolas"
+FontIsBold=0
+FontCharSet=0
+FontHeight=12
+FontQuality=3
+FontVTMode=4
+UseSystemColours=0
+TryPalette=0
+ANSIColour=1
+Xterm256Colour=1
+BoldAsColour=1
+Colour0="212,212,212"
+Colour1="255,255,255"
+Colour2="45,45,45"
+Colour3="63,63,63"
+Colour4="0,0,0"
+Colour5="162,223,169"
+Colour6="45,45,45"
+Colour7="0,0,0"
+Colour8="231,126,126"
+Colour9="231,126,126"
+Colour10="231,225,154"
+Colour11="255,255,128"
+Colour12="128,128,255"
+Colour13="70,70,255"
+Colour14="102,185,217"
+Colour15="141,203,226"
+Colour16="222,116,146"
+Colour17="0,166,166"
+Colour18="131,224,135"
+Colour19="114,216,132"
+Colour20="212,212,212"
+Colour21="255,255,255"
+RawCNP=0
+PasteRTF=0
+MouseIsXterm=0
+RectSelect=0
+MouseOverride=1
+
+##########################################################################
+
+##【ゲストOS】####################################################################
+
+# 時刻の設定
+# インストールされているか確認
+chkconfig | grep ntpd
+# なにも表示されなかったら
+sudo yum -y install ntp
+# インストールされたか確認
+chkconfig | grep ntpd
+# chkconfigの結果でntpがランレベル3,4,5でonになっていなければ
+sudo chkconfig ntpd on
+# ntpがランレベル3,4,5でonになっているか確認
+chkconfig | grep ntpd
+# 設定の書き換え
+sudo vi /etc/ntp.conf
+
+##/etc/ntp.conf##################
+# 時刻の狂いがどんなに大きくても動作停止はしないが、300秒以上狂っていたらSLEWせず一気にあわせる。
+tinker panic 0 step 300
+
+# 時刻の狂う傾向を統計して以下のファイルに記録する
+driftfile /var/lib/ntp/drift
+
+# サーバとしての動作は全面禁止
+restrict default kod nomodify notrap nopeer noquery
+restrict -6 default kod nomodify notrap nopeer noquery
+
+# ただしローカルホストからのアクセスは許可
+restrict 127.0.0.1
+restrict -6 ::1
+
+# NICTからのアクセス（返答パケット）を許可する
+restrict 133.243.238.163 mask 255.255.255.255 nomodify notrap noquery
+restrict 133.243.238.164 mask 255.255.255.255 nomodify notrap noquery
+restrict 133.243.238.243 mask 255.255.255.255 nomodify notrap noquery
+restrict 133.243.238.244 mask 255.255.255.255 nomodify notrap noquery
+
+# 同期先はNICT
+server ntp.nict.jp
+####################
+# サーバ再起動
+sudo service ntpd restart
+
+
+
+
+#リポジトリの追加
+#どのリポジトリを優先的に利用するか設定するためのパッケージをインストールします。
+sudo yum -y install yum-priorities
+#epel
+sudo yum -y localinstall http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm
+#remi
+sudo yum -y localinstall http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+#ius Python2.7, PHP5.5、Python3.3、Git 1.8など
+sudo yum -y localinstall http://dl.iuscommunity.org/pub/ius/stable/CentOS/6/x86_64/ius-release-1.0-11.ius.centos6.noarch.rpm
+
+#sed -i 's/enabled=1/enabled=0/g' /etc/yum.repos.d/epel.repo　←　EPELリポジトリデフォルト無効化※RPMforgeリポジトリと競合するため
+
+#もろもろインストール
+sudo yum -y groupinstall "Development Tools"
+sudo yum -y install openssl-devel
+sudo yum -y install libffi-devel
+sudo yum -y install readline-devel
+sudo yum -y install sqlite-devel
+sudo yum -y install --enablerepo=epel make gcc zlib-devel openssl-devel readline-devel ncurses-devel gdbm-devel db4-devel libffi-devel tk-devel libyaml-devel
+
+#nginx
+sudo vi /etc/yum.repos.d/nginx.repo
+#以下を入力
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/centos/$releasever/$basearch/
+gpgcheck=0
+enabled=1
+#nginxインストール
+sudo yum -y install nginx --enablerepo=nginx
+
+#MySQL 5.6インストール
+sudo yum -y localinstall https://dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm
+sudo yum -y install mysql-server --enablerepo=mysql56-community
+#or
+#sudo yum -y install mysql mysql-devel mysql-server
+sudo vi /etc/my.cnf #で[mysqld]の下に
+[mysqld]
+character-set-server=utf8
+explicit_defaults_for_timestamp=true
+default-storage-engine = InnoDB
+#エラーログの確認
+log-error=/var/log/mysql/error.log
+#クエリログを表示
+general_log=1
+general_log_file=/var/log/mysql/query.log
+log_output=FILE
+#　バイナリログを残す日数
+expire_logs_days = 2
+[client]
+default-character-set = utf8
+[mysqldump]
+default-character-set = <span class="goog_qs-tidbit goog_qs-tidbit-0">utf8
+[mysql]
+default-character-set = utf8
+#を追加
+
+#こんなエラーがでたら Fatal error: Can't open and lock privilege tables: Table 'mysql.user' doesn't exist
+mysql_install_db --datadir=/var/lib/mysql --user=mysql
+
+sudo service mysqld start #とりあえず起動する
+sudo /etc/init.d/mysql start #とりあえず起動する
+sudo service mysqld stop #停止
+sudo /etc/init.d/mysql stop #停止
+
+mysqladmin -u root password 'new-password'
+mysql_secure_installation　#passwordを聞かれたら上記で入力したパスワードを入力し、以降すべてYESで再度rootのパスワードを変更する
+mysql -u root -p　#で接続
+mysql> status #で確認。なにを？まぁ起動してるかどうか的なやつかなぁ
+
+#SQLiteのインストール
+sudo yum -y install sqlite
+sudo yum -y install sqlite-devel
+
+#自動起動
+sudo chkconfig mysqld on
+sudo service mysqld start
+service mysqld stop
+
+
+
+#zshのインストール###################################
+#とりあえずインストール vagrantだったら今まの手順の中でインストールしてるかも。
+sudo yum -y install ncurses-devel
+
+mkdir -p ~/work/zsh
+cd ~/work/zsh
+#いや、なんかうまくいかないので、yumでインストールしようと思ったけどやめた。
+#sudo yum -y install zsh
+#sudo yum -y remove zsh
+
+# http://zsh.sourceforge.net/Arc/source.html
+#に最新版があるらしいです。参考:http://gitpub.hatenablog.com/entry/2013/07/07/182014
+wget http://downloads.sourceforge.net/project/zsh/zsh/5.0.7/zsh-5.0.7.tar.gz?r=http%3A%2F%2Fzsh.sourceforge.net%2FArc%2Fsource.html&ts=1425580779&use_mirror=jaist
+#途中で止まる？けどEnter
+
+#解凍・インストール　参考：http://memo.yomukaku.net/entries/jDqwgQQ
+tar zxvf zsh-5.0.7.tar.gz
+cd zsh-5.0.7
+./configure
+make
+sudo make install
+
+#oh-my-zshのインストール
+cd ~
+git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+cp .oh-my-zsh/templates/zshrc.zsh-template .zshrc
+
+#現在インストールされているシェルを確認
+cat /etc/shells
+
+#ログイン・シェルでzshを利用できるようにするために、/etc/shellsの最終行に以下のように/usr/local/bin/zshを追加します。
+sudo vi /etc/shells
+↓みたいな感じで
+/bin/sh
+/bin/bash
+/sbin/nologin
+/bin/tcsh
+/bin/csh
+/usr/local/bin/zsh
+
+#次に、chshコマンドで実際にzshをログインシェルに設定します。
+chsh -s `which zsh`
+
+#テーマをsteeefに変更
+vi ~/.zshrc
+ZSH_THEME="steeef"
+
+#シェルがzshになったか確認
+echo $SHELL
+#なっていなかったらログアウトして、再度ログイン
+
+#コマンド履歴pecoのインストール 参考：http://qiita.com/popstaplerate/items/dd983267a7075250035b
+cd ~/work/download
+mkdir -p local/src/
+cd　local/src
+wget https://github.com/peco/peco/releases/download/v0.3.2/peco_linux_amd64.tar.gz
+# 「/home/user_dir/work/download/local」に解凍
+tar -C ~/work/download/local -xzf peco_linux_amd64.tar.gz
+mkdir ~/work/download/local/bin
+mv ~/work/download/local/peco_linux_amd64/peco ~/work/download/local/bin
+chmod 700 ~/work/download/local/bin/peco
+#zprofileにexport PATHに以下を追加
+$HOME/work/download/local/bin
+#ログインしなおす。
+
+# zshプラグインの設定
+# zsh-syntax-highlightingを設定する
+cd ~/.oh-my-zsh/custom/plugins
+git clone git://github.com/zsh-users/zsh-syntax-highlighting.git
+# .zshrcのpluginsにzsh-syntax-highlightingを追加します
+# plugins=(git ssh-agent ruby gem zsh-syntax-highlighting)
+
+# よく使うディレクトリをブックマークする zsh のプラグイン(cd-bookmark)
+cd ~/.oh-my-zsh/custom/plugins
+git clone https://github.com/mollifier/cd-bookmark.git
+# .zshrcに以下を追加
+###########################################################
+# よく使うディレクトリをブックマークする zsh のプラグイン(cd-bookmark)の設定
+###########################################################
+fpath=($HOME/.oh-my-zsh/custom/plugins/cd-bookmark(N-/) $fpath)
+autoload -Uz cd-bookmark
+alias cdb='cd-bookmark'
+alias cdba='cd-bookmark -a'
+alias cdbl='cd-bookmark -l'
+alias cdbe='cd-bookmark -e'
+# cdba root でカレントディレクトリをrootという名前で登録
+# cdb root でrootに登録したパスに移動できる
+# cdbで登録されている一覧を表示する
+# cdblで登録されているブックマーク一覧を表示する(上と同じ)
+# cdbeで登録されているブックマークを管理しているファイルをviで編集できる
+# cdb -hでヘルプを参照
+###########################################################
+
+# <app_root>ディレクトリにコマンド一発で移動するプラグイン(cd-gitroot)
+cd ~/.oh-my-zsh/custom/plugins
+git clone https://github.com/mollifier/cd-gitroot.git
+# .zshrcに以下を追加
+###########################################################
+# <app_root>ディレクトリにコマンド一発で移動するプラグイン(cd-gitroot)の設定
+###########################################################
+fpath=($HOME/.oh-my-zsh/custom/plugins/cd-gitroot(N-/) $fpath)
+autoload -Uz cd-gitroot
+alias cdroot='cd-gitroot'
+###########################################################
+
+# tmuxでwindow移動を簡単にしたり、移動履歴を共有するプラグイン(cdd)※これはよくわからないからいらないかも
+cd ~/.oh-my-zsh/custom/pluginse
+git clone https://github.com/m4i/cdd.git
+###########################################################
+# tmuxでwindow移動を簡単にしたり、移動履歴を共有するプラグイン(cdd)の設定
+###########################################################
+autoload -Uz compinit
+compinit
+. ~/.oh-my-zsh/custom/plugins/cdd
+
+chpwd() {
+    _cdd_chpwd
+}
+###########################################################
+
+
+#gitのバージョンアップ
+sudo yum -y remove git #これまでのコマンドではいってしまったgitをアンインストール
+sudo yum -y install curl-devel expat-devel gettext-devel openssl-devel zlib-devel perl-ExtUtils-MakeMaker
+sudo yum -y install zlib-devel.x86_64
+sudo yum -y install perl-ExtUtils-MakeMaker
+mkdir -p ~/work/git
+cd ~/work/git
+wget https://www.kernel.org/pub/software/scm/git/git-2.3.2.tar.gz
+tar -zxf git-2.3.2.tar.gz
+cd git-2.3.2
+sudo make prefix=/usr/local all
+sudo make prefix=/usr/local install
+git --version
+#pathが通っていないので、zsh: command not foundと言われる。.zshrcのexport PATH=$HOME/bin:/usr/local/bin:$PATHをコメントアウト
+vi ~/.zshrc
+#.zprofileに以下を追加
+vi ~/.zprofile
+export PATH=$PATH:$HOME/bin:/usr/sbin:/sbin:/usr/local/sbin:
+
+# gitエイリアスの設定
+# ~/.gitconfigに以下を記載
+[color]
+  ui = true
+[alias]
+  st = status
+  co = checkout
+  cob = checkout -b
+  br = branch
+  me = merge
+  rmv = remote -v
+  pu = push
+  cm = commit
+      # Untracked filesを表示せず，not stagedと，stagedだけの状態を出力する
+  stt = status -uno
+      # 行ごとの差分じゃなくて，単語レベルでの差分を色付きで表示する
+  difff = diff --word-diff
+  hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
+      # 本日の作業を表示
+  today = log --oneline --since='12 hour ago'
+      # いい感じのグラフでログを表示
+  graph = log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
+      # 上の省略形
+  gr = log --graph --date=short --decorate=short --pretty=format:'%Cgreen%h %Creset%cd %Cblue%cn %Cred%d %Creset%s'
+      # windows環境での文字化け対策
+  logs = log --encoding=sjis
+  shows = show --encoding=sjis
+
+
+#tmuxのインストール
+#まだはいっていなければインストール
+sudo yum -y install wget gcc make
+sudo yum -y install ncurses ncurses-devel
+#tmuxのコンパイルの為のlibeventのインストール
+mkdir -p ~/work/tmux
+cd ~/work/tmux
+sudo wget https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz
+tar xvzf libevent-2.0.21-stable.tar.gz
+cd libevent-2.0.21-stable
+./configure
+make
+sudo make install
+#もしかしたらrootにならないとだめかも
+sudo su
+sudo echo "/usr/local/lib" > /etc/ld.so.conf.d/libevent.conf
+sudo ldconfig
+#tmuxのインストール
+wget http://downloads.sourceforge.net/tmux/tmux-1.9a.tar.gz
+tar xvzf tmux-1.9a.tar.gz
+cd tmux-1.9a
+./configure
+sudo make
+sudo make install
+#tmuxの設定ファイルを編集する
+vim ~/.tmux.conf
+
+
+#tmux起動
+tmux
+
+#.zprofileに以下を追加
+# TMUX Settings
+if [ -z $TMUX ]; then
+  if $(tmux has-session); then
+    tmux attach
+  else
+    tmux
+  fi
+fi
+
+#tmuxの使い方
+tmux #で起動
+# 新しいウィンドウを開く ＜Ctrl + t＞＜c＞ ※ "Ctrl"を押しながら"t"を押して離す。続けて"c"を押す。
+# アクティブかどうかはウィンドウ名右の"-"、"*"を見て判断します。
+# ウィンドウの移動 ＜Ctrl + t＞＜p＞ 又は ＜Ctrl + b＞＜n＞
+# ウィンドウを横に分割 ＜Ctrl + t＞＜"＞
+# ウィンドウを縦に分割 ＜Ctrl + t＞＜%＞
+# ウィンドウ内のペインを確認
+# ＜Ctrl + t＞:display-panes
+# ※ "Ctrl"を押しながら"t"を押して離す。続けて":display-panes"と入力してEnter。
+# ※ ":"まで入力した時点でウィンドウの最下部に文字列が入力できるようになります。
+# 操作を忘れた場合は下記でコマンドのリストを表示することができます。
+# ＜Prefix＞＜?＞
+# 時間の表示
+# ＜Ctrl + t＞＜t＞
+
+
+#rbenvをインストールする為の準備
+#sudoers の設定
+sudo visudo -f /etc/sudoers.d/00_base
+#以下2行を追加
+Defaults !secure_path
+Defaults env_keep += "PATH RBENV_ROOT"
+
+#rbenvをシステムワイドにインストール
+cd /usr/local
+sudo git clone git://github.com/sstephenson/rbenv.git rbenv
+
+#ruby-buildインストール
+sudo mkdir /usr/local/rbenv/plugins
+cd /usr/local/rbenv/plugins
+sudo git clone git://github.com/sstephenson/ruby-build.git
+cd ruby-build
+sudo ./install.sh #なにも表示されない。。。けどちゃんと処理してるから大丈夫
+
+#rbenvのディレクトリを作成
+sudo mkdir /usr/local/rbenv/shims /usr/local/rbenv/versions
+#rbenvグループを追加
+sudo groupadd rbenv
+#/usr/local/rbenvを再起的にrbenvグループに変更
+sudo chgrp -R rbenv /usr/local/rbenv
+#/usr/local/rbenvを再起的に権限変更
+sudo chmod -R g+rwxXs /usr/local/rbenv
+
+
+#パスを通す。
+sudo vi /etc/profile.d/rbenv.sh
+#以下3行を追加
+export RBENV_ROOT="/usr/local/rbenv"
+export PATH="/usr/local/rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+#設定値を反映
+source /etc/profile
+
+#rubyのインストール
+#ここからsudo suしないとエラーになる
+#このときrootであることに注意(一般ユーザでsudo rbenv install 2.0.0-p0とすると/root/.rbenv/下にインストールされ共有できない).
+rbenv install -l
+sudo rbenv install 2.2.1
+sudo rbenv global 2.2.1
+sudo rbenv rehash
+
+#bundlerだけはコマンドラインでインストールする。
+sudo gem install bundler
+sudo rbenv rehash
+#バージョン確認
+bundle -v
+#bundleのインストール先確認
+/usr/local/rbenv/versions/2.2.0/bin/bundler -v #Bundler version 1.8.3とでる
+
+bundle -v　#そんなコマンドないと言われる。
+vi ~/.bash_profile　#の$PATHに以下を追加
+vi ~/.zprofile     #zsh使ってる場合はこっち。$PATHに以下を追加
+/usr/local/rbenv/versions/2.2.0/bin
+
+
+#.zprofileの編集
+vi ~/.zprofile
+#以下の行を追加してpathを通して、vimとかprofile.dにかいたrbenvとかを使えるようにする
+for i in /etc/profile.d/*.sh ; do
+    [ -r $i ] && source $i
+done
+export PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/rbenv/versions/2.2.0/bin
+
+#一度ログアウトして、再度ログイン
+
+#pathの確認
+echo $PATH
+#結果、以下のような感じになってればOK。:/usr/local/binがふたつあるのが気になる。
+/home/vagrant/bin
+:/usr/local/bin
+:/usr/local/rbenv/shims
+:/usr/local/rbenv/bin
+:/usr/local/bin
+:/bin
+:/usr/bin
+:/usr/local/sbin
+:/usr/sbin
+:/sbin
+:/usr/local/rbenv/versions/2.2.0/bin
+
+
+###################################
+
+#vimのインストール###################################
+#めんどくさい人はこれ
+#sudo yum -y install vim
+
+#vim7.4をインストールする場合
+#vimのバージョン確認
+yum list installed | grep vim
+#結果、vim-minimal.x86_64     2:7.2.411-1.8.el6
+
+#以下のコマンドで必要なパッケージがインストールされているか確認
+sudo yum list installed | grep mercurial
+sudo yum list installed | grep ncurses-devel
+sudo yum list installed | grep make
+sudo yum list installed | grep gcc
+
+#インストールされていない場合はそれぞれインストール。
+# sudo yum -y install mercurial
+# sudo yum -y install ncurses-devel
+# sudo yum -y install make
+# sudo yum -y install gcc
+sudo yum -y install mercurial ncurses-devel make gcc　ruby-devel
+
+#vimのインストール 参考：http://qiita.com/SOJO/items/9d6a65f3da941c49da36
+cd /usr/local/src
+#vimディレクトにクローンする。
+sudo hg clone https://vim.googlecode.com/hg/ vim
+#vimディレクトに移動する。
+cd /usr/local/src/vim
+#最新版がなにか確認する
+sudo hg pull
+#configureコマンドを使ってMakefileを生成して、make して　make install
+sudo ./configure --with-features=huge --enable-multibyte --disable-selinux
+sudo make
+sudo make install
+#これで完了 バージョン確認
+vim --version
+
+#プラグイン管理ツールをインストール
+mkdir -p ~/.vim/bundle
+git clone https://github.com/Shougo/neobundle.vim ~/.vim/bundle/neobundle.vim
+
+#vim設定ファイルの編集　参考：https://github.com/dai---/memo/blob/master/development/dotfile/Mac/.vimrc
+vi ~/.vimrc
+#vimを起動して、プラグインをインストールするか聞かれるので、「y」を入力する
+vim
+
+#実際には使わないが保存するときにめんどくさいことになるので、バックアップ用のディレクトリを作成
+mkdir ~/.vim/backup
+
+# 透過させる場合
+vi ~/.vim/bundle/Zenburn/colors/zenburn.vim
+# で336行目あたり、
+hi Normal ctermfg=188 ctermbg=237
+# ↓
+hi Normal ctermfg=188
+# に変える
+
+###################################
+
+
+
+
+
+#~/.bashrc　or ~/.zshrcに以下を追加
+alias viv='vi ~/.vimrc'
+alias setv='source ~/.vimrc'
+alias vib='vi ~/.bashrc'
+alias setb='source ~/.bashrc'
+alias viz='vi ~/.zshrc'
+alias setz='source ~/.zshrc'
+alias be='bundle exec'
+alias berc='bundle exec rails c'
+alias bedb='bundle exec rails db'
+alias bers='bundle exec rails s -b 192.168.33.10'
+alias bean='bundle exec annotate'
+alias berr='bundle exec rake routes'
+
+
+#アプリケーションを作成
+mkdir /work/test/
+cd /work/test/
+bundle init
+vi Gemfile #railsのコメントアウトを外す。
+bundle install --path vendor/bundle
+
+たまに
+#An error occurred while installing rails-deprecated_sanitizerみたいなエラーがでるが
+#gemのサーバーが落ちてるだけみたい。
+#再度bundle install したら上手くいった。
+bundle install --path vendor/bundle
+
+#railsアプリケーションのひな形作成
+bundle exec rails new .
+bundle exec rails new . -d mysql
+
+#Gemfileのtherubyracerのコメントアウトを外す
+bundle install
+
+mysql -u root -p　#でmysqlに接続
+mysql> create user <rails_app_name>@localhost identified by '<password>';
+mysql> grant all on <rails_app_name>_development.* to <rails_app_name>@localhost;
+mysql> grant all on <rails_app_name>_test.* to <rails_app_name>@localhost;
+#ユーザーが作成されたか確認
+mysql> select Host, User, Password from mysql.user;
+mysql> exit
+
+#railsのデータベースの設定を修正(username: ←に半角がないとエラーになる)
+vi config/database.yml
+
+development:
+  〜
+  username: <rails_app_name>
+  password: <password>
+  〜
+test:
+  〜
+  username: <rails_app_name>
+  password: <password>
+
+#bundle installしてmysql2のエラーがでた場合は
+sudo yum -y install mysql-devel
+
+#データベース作成(development/test/productionのすべてを作成)
+bundle exec rake db:create:all
+bundle exec rake db:create
+#rake db:create はこんなクエリで <rails_app_name>_development と <rails_app_name>_test データベースを作ってます。
+#CREATE DATABASE `<rails_app_name>_development` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`
+#CREATE DATABASE `<rails_app_name>_test` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`
+
+#作成したデータベースの消去
+#bundle exec rake db:create:all
+
+#railsサーバー起動
+bundle exec rails s -b 192.168.33.10 -p 3100
+
+
+#gitで管理
+#githubに鍵を登録する為に公開鍵と秘密鍵のペアを作成
+cd ~/.ssh
+ssh-keygen -t rsa -C "vagrant@example.com"
+#Enter3回押せばOK
+cat　id_rsa.pub #で表示された公開鍵をgithubに登録
+
+#railsのルートディレクトリで
+git init
+vi .gitignore
+#/vendor/bundle
+#/vendor/bundler を追加
+git config --global user.name "dai"
+git config --global user.email example@gmail.com
+git add .
+git commit -m "first commit"
+#githubのプッシュ先を設定。
+git remote add origin git@github.com:dai---/dai-rails-study.git
+git pull origin master #githubでリポジトリを作成した際に勝手に作成されたreadmeとかをダウンロード
+git push origin master #でエラーにった場合、githubに正常に公開鍵が登録できていない。
+
+#開発はそれぞれのブランチでやること。
+git branch windows
+git branch mac
+
+
+##########################################################################
+
+##【サンプルアプリケーション】####################################################################
+
+bundle exec rails g scaffold ItemGroup name:string
+bundle exec rails g scaffold Item  name:string value:integer item_group:references
+
+##########################################################################
+
+##【sql】####################################################################
+
+CREATE TABLE db_name.app_groups (
+                                  id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                                  FOREIGN KEY (co_id) REFERENCES cos(id)
+                                  status int(11),
+                                  name varchar(255),
+                                  created_at datetime NOT NULL,
+                                  updated_at datetime NOT NULL,
+                                  deleted_at datetime,
+                                  FOREIGN KEY (operator_id) REFERENCES operator(id)
+                               );
+
+CREATE TABLE db_name.app_groups (
+                                  id int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+                                  co_id int(11),
+                                  status int(11),
+                                  name varchar(255),
+                                  created_at datetime NOT NULL,
+                                  updated_at datetime NOT NULL,
+                                  deleted_at datetime,
+                                  operator_id int(11),
+                                  FOREIGN KEY (co_id) REFERENCES cos(id),
+                                  FOREIGN KEY (operator_id) REFERENCES operator(id)
+                               ) ENGINE=InnoDB;
+
+##########################################################################
+
+
+##【WEBRick起動の仕方】####################################################################
+
+rails server -p80 -d
+
+##########################################################################
+
+
+
+
