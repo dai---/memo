@@ -118,6 +118,7 @@ alias vib='vi ~/.bashrc'
 alias setb='source ~/.bashrc'
 alias viz='vi ~/.zshrc'
 alias setz='source ~/.zshrc'
+alias relogin='exec $SHELL -l'
 alias be='bundle exec'
 alias berc='bundle exec rails c'
 alias bedb='bundle exec rails db'
@@ -132,6 +133,7 @@ alias -g H='| head'
 alias -g T='| tail'
 alias -g W='| wc'
 alias -g S='| sort'
+alias -g P='| peco'
 
 ###########################################################
 # 履歴管理
@@ -193,6 +195,9 @@ function history-all { history -E 1 }
 ###########################################################
 # コマンド履歴pecoの設定
 ###########################################################
+# Ctrl + r コマンド履歴検索
+# Ctrl + f ディレクトリ移動検索
+
 function peco-select-history() {
     local tac
     if which tac > /dev/null; then
@@ -210,6 +215,17 @@ function peco-select-history() {
 zle -N peco-select-history
 bindkey '^r' peco-select-history
 
+function peco-cd () {
+    local selected_dir=$(find ~/ -type d | peco)
+    if [ -n "$selected_dir" ]; then
+        BUFFER="cd ${selected_dir}"
+        zle accept-line
+    fi
+    zle clear-screen
+}
+zle -N peco-cd
+# bindkey '^x^f' peco-cd
+bindkey '^f' peco-cd
 ###########################################################
 
 ###########################################################
@@ -237,12 +253,35 @@ autoload -Uz cd-gitroot
 alias cdroot='cd-gitroot'
 ###########################################################
 
+
+#######################################
+# autojumpを使用できるように設定
+#######################################
+# 使い方　j ディレクトリ名の一部[tab]
+# 例：　j gi[Tab]ってやると 「gi」のディレクトリ名で検索され補完候補に表示される。
+# [[ -s /root/.autojump/etc/profile.d/autojump.sh ]] && source /root/.autojump/etc/profile.d/autojump.sh
+[[ -s /home/vagrant/.autojump/etc/profile.d/autojump.sh ]] && source /home/vagrant/.autojump/etc/profile.d/autojump.sh
+fpath=($HOME/work/download/j/autojump/bin(N-/) $fpath)
+# ~/.local/share/autojump/autojump.txt にディレクトリ名と回数が記録される
+# j --stat　で↑を確認できる
+#######################################
+
+#######################################
+# zsh-bdを使用できるように設定
+#######################################
+# 使い方　カレントが~/.oh-my-zsh/custom/plugins/zsh-bd/ だった場合
+# bd　[tab] で.oh-my-zsh　custom　pluginsとかでてくるので、選択すれば上の階層に一気に飛べる
+source $HOME/.oh-my-zsh/custom/plugins/zsh-bd/bd.zsh
+#######################################
+
+
 ###########################################################
 # 補完
 ###########################################################
 autoload -U compinit # 補完機能
 compinit -u # 補完を賢くする
 setopt autopushd # cdの履歴表示、cd - で一つ前のディレクトリへ
+setopt auto_pushd # cdしたら勝手にpushdする
 setopt pushd_ignore_dups # 同ディレクトリを履歴に追加しない
 setopt auto_cd # ディレクトリ名のみでcd
 setopt list_packed # リストを詰めて表示
@@ -250,6 +289,14 @@ setopt list_types # 補完一覧をファイル種別に表示
 setopt correct # コマンドのスペルチェックを有効に
 ###########################################################
 
+###########################################################
+# zshのman を素早く確認する設定
+###########################################################
+# 使い方　zman 検索したいコマンド　例：zman history
+function zman() {
+    PAGER="less -g -s '+/^       "$1"'" man zshall
+}
+###########################################################
 
 [ -f ~/.zshrc.include ] && source ~/.zshrc.include # 設定ファイルのinclude
 

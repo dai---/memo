@@ -255,6 +255,42 @@ chmod 700 ~/work/download/local/bin/peco
 #zprofileにexport PATHに以下を追加
 $HOME/work/download/local/bin
 #ログインしなおす。
+# .zshrcに以下を追加
+###########################################################
+# コマンド履歴pecoの設定
+###########################################################
+# Ctrl + r コマンド履歴検索
+# Ctrl + f ディレクトリ移動検索
+
+function peco-select-history() {
+    local tac
+    if which tac > /dev/null; then
+        tac="tac"
+    else
+        tac="tail -r"
+    fi
+
+    BUFFER=$(\history -n 1 | \
+        eval $tac | \
+        peco --query "$LBUFFER")
+    CURSOR=$#BUFFER
+    zle clear-screen
+}
+zle -N peco-select-history
+bindkey '^r' peco-select-history
+
+function peco-cd () {
+    local selected_dir=$(find ~/ -type d | peco)
+    if [ -n "$selected_dir" ]; then
+        BUFFER="cd ${selected_dir}"
+        zle accept-line
+    fi
+    zle clear-screen
+}
+zle -N peco-cd
+# bindkey '^x^f' peco-cd
+bindkey '^f' peco-cd
+###########################################################
 
 # zshプラグインの設定
 # zsh-syntax-highlightingを設定する
@@ -416,6 +452,154 @@ tmux #で起動
 # ＜Prefix＞＜?＞
 # 時間の表示
 # ＜Ctrl + t＞＜t＞
+
+##【The Silver Searcherのインストール】##########################
+cat /proc/cpuinfo
+# flagsの値にlmがあれば、64ビットCPUです。
+uname -a
+# X86_64とかamd64とかが表示されたら、64ビット版のカーネルです。
+# 64ビットCPU上で、64ビット版カーネルが稼働している時が64ビットマシンです。
+
+sudo yum -y install pcre-devel xz-devel
+mkdir ~/work/download/ag
+cd ~/work/download/ag
+git clone https://github.com/ggreer/the_silver_searcher
+cd the_silver_searcher
+./build.sh
+sudo make install
+
+vi ~/.agignoreに以下を追記
+
+log
+logs
+tmp
+vendor
+.vim/bundle
+.vim/dict
+.git
+lib
+libs
+jquery-*.js
+*.swp
+*.sql
+*.tags*
+*.gemtags*
+*.csv
+*.tsv
+*.tmp*
+*.js
+*.css
+*.old
+*.json
+*.xml
+*.pdf
+*.md
+*.log
+
+
+# agの使い方
+ag [options] {pattern} [{directory}]
+ag 担当者
+ag 担...者
+cat hoge.log | ag ERROR
+# ファイル名だけ表示
+ag 担当者 -l
+# 隠しファイルおよび無視リストも対象
+ag 担当者 -u
+
+
+-a  無視リストも対象
+-u  隠しファイルおよび無視リストも対象
+-g  ファイル名で検索
+-G  検索対象の指定 [ag -G *.css]
+-l  一致したファイル
+名のみ
+-L  一致していないファイル名のみ
+-v  不一致検索
+-Q  正規表現を無視
+-z  圧縮ファイルも対象
+-i  大文字小文字を区別しない
+-C  ヒットした行の前後表示行数を指定
+ex)マッチした前後５行を表示
+ag -C 5 decode_content
+
+##########################################################
+
+##【manのインストール】###########################################
+
+# man のインストールが先だった
+sudo yum -y install man
+# man 日本語をインストール
+sudo yum -y install man-pages-ja
+# .zshrcに以下を追記
+#######################################
+# zshのman を素早く確認する設定
+#######################################
+# 使い方　zman 検索したいコマンド　例：zman history
+function zman() {
+  PAGER="less -g -s '+/^ "$1"'" man zshall
+}
+#######################################
+
+############################################################
+
+##【autojumpのインストール】###########################################
+# ↓こんなことしなくても、oh-my-zshいれてればプラグインのところにautojumpって書けばjコマンド使えるようになったかも。
+# autojumpを利用するにはpython2.6か3.0以上が必要です。
+python --version
+# Python 2.6.6
+mkdir ~/work/download/j
+cd j
+git clone git://github.com/joelthelion/autojump.git
+cd autojump
+
+./install.py
+# アンインストールする場合は
+# ./uninstall.py
+# sudoつけてインストールするとrootのところにはいっちゃうからsudoはつけないこと。
+
+# .zshrcに以下を追記
+#######################################
+# autojumpを使用できるように設定
+#######################################
+# 使い方　j ディレクトリ名の一部[tab]
+# 例：　j gi[Tab]ってやると 「gi」のディレクトリ名で検索され補完候補に表示される。
+# alias j="autojump"　←これやったら逆に「j」がつかえなくなった
+# [[ -s /root/.autojump/etc/profile.d/autojump.sh ]] && source /root/.autojump/etc/profile.d/autojump.sh
+[[ -s /home/vagrant/.autojump/etc/profile.d/autojump.sh ]] && source /home/vagrant/.autojump/etc/profile.d/autojump.sh
+fpath=($HOME/work/download/j/autojump/bin(N-/) $fpath)
+# ~/.local/share/autojump/autojump.txt にディレクトリ名と回数が記録される
+# j --stat　で↑を確認できる
+#######################################
+
+############################################################
+
+##【zsh bdプラグインのインストール】###########################################
+cd $HOME/.oh-my-zsh/custom/plugins/
+# wget https://raw.githubusercontent.com/Tarrasch/zsh-bd/master/bd.zsh
+# curl https://raw.githubusercontent.com/Tarrasch/zsh-bd/master/bd.zsh > $HOME/.oh-my-zsh/custom/plugins/bd/bd.zsh
+git clone https://github.com/Tarrasch/zsh-bd.git
+cd zsh-bd
+source bd.zsh
+# .zshrcに以下を追記
+#######################################
+# zsh-bdを使用できるように設定
+#######################################
+# 使い方　カレントが~/.oh-my-zsh/custom/plugins/zsh-bd/ だった場合
+# bd　[tab] で.oh-my-zsh　custom　pluginsとかでてくるので、選択すれば上の階層に一気に飛べる
+source $HOME/.oh-my-zsh/custom/plugins/zsh-bd/bd.zsh
+#######################################
+
+############################################################
+
+
+##【manのインストール】##########################
+
+# man のインストールが先だった
+sudo yum -y install man
+# man 日本語をインストール
+sudo yum -y install man-pages-ja
+##########################################
 
 
 #rbenvをインストールする為の準備
