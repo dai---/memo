@@ -269,17 +269,18 @@ sudo yum -y install sqlite-devel
 
 
 #zshのインストール###################################
-mkdir -p ~/work/zsh
-cd ~/work/zsh
+mkdir -p ~/work/download/zsh
+cd ~/work/download/zsh
 
-# http://zsh.sourceforge.net/Arc/source.html
-#に最新版があるらしいです。参考:http://gitpub.hatenablog.com/entry/2013/07/07/182014
-wget http://downloads.sourceforge.net/project/zsh/zsh/5.0.7/zsh-5.0.7.tar.gz?r=http%3A%2F%2Fzsh.sourceforge.net%2FArc%2Fsource.html&ts=1425580779&use_mirror=jaist
-#途中で止まる？けどEnter
+# ver.5.1,1
+wget http://sourceforge.net/projects/zsh/files/zsh/5.1.1/zsh-5.1.1.tar.gz/download?use_mirror=jaist
+#ダウンロードが途中で止まったように見えるがEnter押下
+# 変なファイル名でダウンロードされるから名前の変更
+mv zsh-5.1.1.tar.gz\?r\=http\:%2F%2Fsourceforge.net%2Fprojects%2Fzsh%2Ffiles%2Fzsh%2F5.1.1%2Fzsh-5.1.1.tar.gz%2Fdownload\?use_mirror\=jaist zsh-5.1.1.tar.gz
 
 #解凍・インストール　参考：http://memo.yomukaku.net/entries/jDqwgQQ
-tar zxvf zsh-5.0.7.tar.gz
-cd zsh-5.0.7
+tar zxvf zsh-5.1.1.tar.gz
+cd zsh-5.1.1
 ./configure
 make
 sudo make install
@@ -315,16 +316,16 @@ echo $SHELL
 
 #コマンド履歴pecoのインストール 参考：http://qiita.com/popstaplerate/items/dd983267a7075250035b
 cd ~/work/download
-mkdir -p local/src/
-cd　local/src
-wget https://github.com/peco/peco/releases/download/v0.3.2/peco_linux_amd64.tar.gz
-# 「/home/user_dir/work/download/local」に解凍
-tar -C ~/work/download/local -xzf peco_linux_amd64.tar.gz
-mkdir ~/work/download/local/bin
-mv ~/work/download/local/peco_linux_amd64/peco ~/work/download/local/bin
-chmod 700 ~/work/download/local/bin/peco
-#zprofileにexport PATHに以下を追加
-$HOME/work/download/local/bin
+mkdir -p peco/local/src/
+cd　peco/local/src
+wget https://github.com/peco/peco/releases/download/v0.3.4/peco_linux_amd64.tar.gz
+# 「/home/user_dir/work/download/peco/local」に解凍
+tar -C ~/work/download/peco/local -xzf peco_linux_amd64.tar.gz
+mkdir ~/work/download/peco/local/bin
+mv ~/work/download/peco/local/peco_linux_amd64/peco ~/work/download/peco/local/bin
+chmod 700 ~/work/download/peco/local/bin/peco
+#zprofileを新規に作成し、以下を追加
+export PATH=$PATH:$HOME/bin:$HOME/work/download/peco/local/bin
 #ログインしなおす。
 # .zshrcに以下を追加
 ###########################################################
@@ -403,32 +404,13 @@ autoload -Uz cd-gitroot
 alias cdroot='cd-gitroot'
 ###########################################################
 
-# tmuxでwindow移動を簡単にしたり、移動履歴を共有するプラグイン(cdd)※これはよくわからないからいらないかも
-cd ~/.oh-my-zsh/custom/pluginse
-git clone https://github.com/m4i/cdd.git
-###########################################################
-# tmuxでwindow移動を簡単にしたり、移動履歴を共有するプラグイン(cdd)の設定
-###########################################################
-autoload -Uz compinit
-compinit
-. ~/.oh-my-zsh/custom/plugins/cdd
-
-chpwd() {
-    _cdd_chpwd
-}
-###########################################################
-
-
 #gitのバージョンアップ
 sudo yum -y remove git #これまでのコマンドではいってしまったgitをアンインストール
 sudo yum -y install curl-devel expat-devel gettext-devel openssl-devel zlib-devel perl-ExtUtils-MakeMaker
 sudo yum -y install zlib-devel.x86_64
 sudo yum -y install perl-ExtUtils-MakeMaker
-mkdir -p ~/work/git
-cd ~/work/git
-wget https://www.kernel.org/pub/software/scm/git/git-2.3.2.tar.gz
-tar -zxf git-2.3.2.tar.gz
-cd git-2.3.2
+cd ~/work/download/
+git clone https://github.com/git/git
 sudo make prefix=/usr/local all
 sudo make prefix=/usr/local install
 git --version
@@ -437,6 +419,7 @@ vi ~/.zshrc
 #.zprofileに以下を追加
 vi ~/.zprofile
 export PATH=$PATH:$HOME/bin:/usr/sbin:/sbin:/usr/local/sbin:
+# 再ログイン
 
 # gitエイリアスの設定
 # ~/.gitconfigに以下を記載
@@ -472,9 +455,9 @@ export PATH=$PATH:$HOME/bin:/usr/sbin:/sbin:/usr/local/sbin:
 sudo yum -y install wget gcc make
 sudo yum -y install ncurses ncurses-devel
 #tmuxのコンパイルの為のlibeventのインストール
-mkdir -p ~/work/tmux
-cd ~/work/tmux
-sudo wget https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz
+mkdir -p ~/work/download/tmux
+cd ~/work/download/tmux
+wget https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz
 tar xvzf libevent-2.0.21-stable.tar.gz
 cd libevent-2.0.21-stable
 ./configure
@@ -482,12 +465,14 @@ make
 sudo make install
 #もしかしたらrootにならないとだめかも
 sudo su
-sudo echo "/usr/local/lib" > /etc/ld.so.conf.d/libevent.conf
-sudo ldconfig
+echo "/usr/local/lib" > /etc/ld.so.conf.d/libevent.conf
+ldconfig
 #tmuxのインストール
-wget http://downloads.sourceforge.net/tmux/tmux-1.9a.tar.gz
-tar xvzf tmux-1.9a.tar.gz
-cd tmux-1.9a
+wget http://osdn.jp/frs/g_redir.php?m=kent&f=%2Ftmux%2Ftmux%2Ftmux-2.0%2Ftmux-2.0.tar.gz
+# 変な名前でダウンロードされるので、ファイル名変更
+mv g_redir.php\?m=kent\&f=%2Ftmux%2Ftmux%2Ftmux-2.0%2Ftmux-2.0.tar.gz tmux-2.0.tar.gz
+tar xvzf tmux-2.0.tar.gz
+cd tmux-2.0
 ./configure
 sudo make
 sudo make install
