@@ -121,12 +121,13 @@ sudo vi /etc/sysconfig/iptables
 -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 631 -j ACCEPT
 -A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-# SSH, HTTP, FTP1, FTP2, MySQL
+# SSH, HTTP, FTP1, FTP2, MySQL, rails servers
 -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport XXXXX -j ACCEPT
 -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 80    -j ACCEPT
 -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 20    -j ACCEPT
 -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 21    -j ACCEPT
 -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 3306  -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 3200  -j ACCEPT
 
 -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
 
@@ -714,23 +715,21 @@ source /etc/profile
 #ここからsudo suしないとエラーになる
 #このときrootであることに注意(一般ユーザでsudo rbenv install 2.0.0-p0とすると/root/.rbenv/下にインストールされ共有できない).
 rbenv install -l
-sudo rbenv install 2.2.1
-sudo rbenv global 2.2.1
-sudo rbenv rehash
+rbenv install 2.2.3
+rbenv global 2.2.3
+rbenv rehash
 
 #bundlerだけはコマンドラインでインストールする。
-sudo gem install bundler
-sudo rbenv rehash
+gem install bundler
+rbenv rehash
 #バージョン確認
 bundle -v
-#bundleのインストール先確認
-/usr/local/rbenv/versions/2.2.0/bin/bundler -v #Bundler version 1.8.3とでる
+# ここまでrootで作業する
 
-bundle -v　#そんなコマンドないと言われる。
+bundler -v　#そんなコマンドないと言われる。
 vi ~/.bash_profile　#の$PATHに以下を追加
 vi ~/.zprofile     #zsh使ってる場合はこっち。$PATHに以下を追加
-/usr/local/rbenv/versions/2.2.0/bin
-
+/usr/local/rbenv/versions/2.2.0/bin　#これをやるとバージョンを変えたときにややこしいことになるかも。できるだけやらない。
 
 #.zprofileの編集
 vi ~/.zprofile
@@ -738,7 +737,7 @@ vi ~/.zprofile
 for i in /etc/profile.d/*.sh ; do
     [ -r $i ] && source $i
 done
-export PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/rbenv/versions/2.2.0/bin
+
 
 #一度ログアウトして、再度ログイン
 
@@ -854,6 +853,7 @@ bundle install --path vendor/bundle
 #railsアプリケーションのひな形作成
 bundle exec rails new .
 bundle exec rails new . -d mysql
+# このとき
 
 #Gemfileのtherubyracerのコメントアウトを外す
 bundle install
@@ -879,8 +879,13 @@ test:
   username: <rails_app_name>
   password: <password>
 
-#bundle installしてmysql2のエラーがでた場合は
+#bundle installしてmysql2の以下のエラーがでた場合は
+# An error occurred while installing mysql2 (0.4.1), and Bundler cannot
+# continue.
+# Make sure that `gem install mysql2 -v '0.4.1'` succeeds before bundling.
+#          run  bundle exec spring binstub --all
 sudo yum -y install mysql-devel
+bundle install --path vendor/bundle
 
 #データベース作成(development/test/productionのすべてを作成)
 bundle exec rake db:create:all
@@ -888,6 +893,13 @@ bundle exec rake db:create
 #rake db:create はこんなクエリで <rails_app_name>_development と <rails_app_name>_test データベースを作ってます。
 #CREATE DATABASE `<rails_app_name>_development` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`
 #CREATE DATABASE `<rails_app_name>_test` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`
+
+# データベースを作成した際に以下のエラーが発生した際は、gemfileのmysqlのバージョン指定をする
+# Specified 'mysql2' for database adapter, but the gem is not loaded. Add `gem 'mysql2'` to your Gemfile (and ensure its version is at the minimum required by ActiveRecord).
+
+'mysql2', '~> 0.3.20'
+bundle install --path vendor/bundle
+
 
 #作成したデータベースの消去
 #bundle exec rake db:create:all
