@@ -421,15 +421,13 @@ chpwd() {
 
 
 #gitのバージョンアップ
-sudo yum -y remove git #これまでのコマンドではいってしまったgitをアンインストール
 sudo yum -y install curl-devel expat-devel gettext-devel openssl-devel zlib-devel perl-ExtUtils-MakeMaker
 sudo yum -y install zlib-devel.x86_64
 sudo yum -y install perl-ExtUtils-MakeMaker
-mkdir -p ~/work/git
-cd ~/work/git
-wget https://www.kernel.org/pub/software/scm/git/git-2.3.2.tar.gz
-tar -zxf git-2.3.2.tar.gz
-cd git-2.3.2
+cd ~/work/download/
+git clone https://github.com/git/git
+sudo yum -y remove git #これまでのコマンドではいってしまったgitをアンインストール
+cd git
 sudo make prefix=/usr/local all
 sudo make prefix=/usr/local install
 git --version
@@ -853,7 +851,8 @@ bundle install --path vendor/bundle
 #railsアプリケーションのひな形作成
 bundle exec rails new .
 bundle exec rails new . -d mysql
-# このとき
+# Rails標準のテスティングフレームワーク「test-unit」を利用するのではなく「Rspec」を利用したいので、オプションに「test-unit」は利用しないように指定します。
+bundle exec rails new . --skip-test-unit -d mysql
 
 #Gemfileのtherubyracerのコメントアウトを外す
 bundle install
@@ -905,7 +904,7 @@ bundle install --path vendor/bundle
 #bundle exec rake db:create:all
 
 #railsサーバー起動
-bundle exec rails s -b 192.168.33.10 -p 3100
+bundle exec rails s -b 192.168.33.10 -p 3200
 
 
 #gitで管理
