@@ -52,7 +52,7 @@ plugins=(git　zsh-syntax-highlighting)
 
 # export PATH=$HOME/bin:$PATH
 # export MANPATH="/usr/local/man:$MANPATH"
-export PATH=$PATH:/usr/local/sbin:/usr/sbin:/sbin:/usr/local/rbenv/versions/2.2.0/bin:$HOME/work/download/local/bin:$HOME:bin
+export PATH=$PATH:$HOME/bin:$HOME/work/download/peco/local/bin:/usr/local/sbin:/usr/sbin:/sbin:
 
 source $ZSH/oh-my-zsh.sh
 

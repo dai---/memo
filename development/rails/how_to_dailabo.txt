@@ -1,4 +1,15 @@
 
+##【migrate】####################################################################
+
+bundle exec rails generate scaffold Article title:string content:text
+bundle exec rake db:migrate
+
+bundle exec rails g model Task title:string done:boolean project:references
+bundle exec rake db:migrate
+bundle exec rails g controller Tasks
+
+######################################################################
+
 ##【device】####################################################################
 
 参考：http://ruby-rails.hatenadiary.com/entry/20140801/1406907000

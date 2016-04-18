@@ -783,9 +783,10 @@ bundle install --path vendor/bundle
 #railsアプリケーションのひな形作成
 bundle exec rails new .
 bundle exec rails new . -d mysql
+bundle exec rails new . -d mysql --skip-bundle
 
 #Gemfileのtherubyracerのコメントアウトを外す
-bundle install
+bundle install --path vendor/bundle
 
 mysql -u root -p　#でmysqlに接続
 mysql> create user <rails_app_name>@localhost identified by '<password>';
@@ -808,6 +809,11 @@ test:
   username: <rails_app_name>
   password: <password>
 
+# database.ymlの設定して以下のコマンドで自動的にデータベースをつくってくれる
+bundle exec rake db:create
+
+
+
 #bundle installしてmysql2のエラーがでた場合は
 sudo yum -y install mysql-devel
 
@@ -824,6 +830,8 @@ bundle exec rake db:create
 #railsサーバー起動
 bundle exec rails s -b 192.168.33.10 -p 3100
 
+# 以下のURLにアクセスして、railsの画面がでてきたら成功
+http://192.168.33.10:3100/
 
 #gitで管理
 #githubに鍵を登録する為に公開鍵と秘密鍵のペアを作成
@@ -857,6 +865,8 @@ git branch mac
 
 bundle exec rails g scaffold ItemGroup name:string
 bundle exec rails g scaffold Item  name:string value:integer item_group:references
+
+bundle exec rake db:migrate
 
 ##########################################################################
 
@@ -892,6 +902,12 @@ CREATE TABLE db_name.app_groups (
 ##【WEBRick起動の仕方】####################################################################
 
 rails server -p80 -d
+
+#railsサーバー起動
+bundle exec rails s -b 192.168.33.10 -p 3100
+
+# 以下のURLにアクセスして、railsの画面がでてきたら成功
+http://192.168.33.10:3100/
 
 ##########################################################################
 
