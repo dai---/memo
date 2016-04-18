@@ -1,11 +1,137 @@
 
 ################################################
+# Developer Toolsのインストール
+################################################
+# Xcodeのバージョンアップ
+①Xcodeを開いて上のXcode->Open Developer Tool->More Developer Toolsを選択。
+するとAppleDeveloperのサイトに飛びますので（Developer登録が必要）そこから
+CategoriesのDeveloper Toolsにチェックを入れ、CommandLineToolsをインストールします。
+
+②Xcodeをインストールしてターミナルから以下を入力。
+$ xcode-select --install
+
+################################################
+
+
+################################################
 # homebrewのインストール
 ################################################
 
-brew update
+# Homebrewの用語で次の2つは覚えておきましょう。
+・Celler  パッケージのインストール先   /usr/local/Celler
+・Formula ビルド手順が書かれたスクリプト /usr/local/Library/Formula
+
+# 環境変数の確認
+# Homebrewでインストールしたパッケージは /usr/local/Celler にインストールされ、
+# /usr/local/bin にシンボリックリンクが作られます。
+# そのため、環境変数のPATHで /usr/local/bin を優先させなければいけません。
+$ echo $PATH
+
+$ ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+
+# コマンドラインツールがない場合はインストールを促すポップアップが表示される
+
+# バージョンの確認
+$ brew --version
+
+# Homebrewのシステム設定を表示
+$ brew --config
+
+# brewのアップデート
+# Homebrew本体とFormulaを更新 (パッケージは更新されない)
+$ brew update
+
+# パッケージを再ビルドする (Formula省略時は更新があるパッケージを全てビルド)
+$ brew upgrade [Formula]
+
+# インストールした特定のFormulaeの古いバージョンをCellarから削除する（Formula省略時は全て）
+$ brew cleanup [Formula]
+
+# 問題がないかチェックする
+$ brew doctor
+# →Your system is ready to brew.と表示されれば問題ない
+
+# 更新のあるFormulaを確認
+$ brew outdated
+
+# パッケージを更新対象から除外
+# brew upgrade で Formula を省略をすると全てのパッケージが更新されますが、バージョンを上げたくないパッケージがある場合に使います。
+$ brew pin [Formula]
+
+# 更新対象に戻したい場合は unpin を使います。
+$ brew unpin [Formula]
+
+# シンボリックリンク作成
+$ brew link [Formula]
+# インストールしたFormulaのシンボリックリンクが作成されなかった場合などに使いますが、Worningが表示されて作成出来なかったら --force オプションを付けて実行します。
+Warning: openssl is keg-only and must be linked with --force
+...
+$ brew link openssl --force
+
+# シンボリックリンクを削除するには unlink を使います。
+$ brew unlink [Formula]
+
+# インストール可能なFormulaを検索 (Formula省略時は全て表示)
+$ brew search [Formula]
+
+# インストールされているパッケージ一覧 (Formula省略時は全て表示)
+$ brew list [Formula]
+
+# zshのインストール
+# Mac の場合、zsh起動時にPATHが書き換えられてしまうという問題があるので、
+# "--disable-etcdir"オプションを付加してインストールします。
+$ brew install --disable-etcdir zsh
+
+# oh-my-zshのインストール
+# https://github.com/robbyrussell/oh-my-zsh
+# から公式のやり方を確認
+
+# vi ~/.zshrc
+# plugins=(git ruby osx bundler brew rails emoji-clock)
+# を追加
+
+# Homebrew-caskを使ってMacのGUIアプリケーションを管理する
+$ brew install caskroom/cask/brew-cask
+
+# Homebrew-versions
+# Homebrew-caskでバージョン指定する為に必要
+# 例えば、firefoxなどはこれがないと英語版がインストールされたりする。
+$ brew tap caskroom/versions
+
+# $ brew cask search <app-name>でインストール可能なアプリを検索できます。引数なしで実行すると全件取得されます。
+
+# GUIアプリのインストール
+$ brew cask install <app-name>でアプリをインストールします。
+# 例：brew cask install google-earth
+
+# GUIアプリのアンインストール
+$ brew cask uninstall <app-name>でアプリをアンインストールします。
+
+# インストールしたGUIアプリの一覧
+$ brew cask list
+
+# インストール先について
+# アプリは/opt/homebrew-cask/Caskroom配下にインストールされ、~/Applicationsに格納されるのはシンボリックリンクになります。
+# また、ダウンロードした.dmgファイルなどは/Library/Caches/Homebrew/Casksにあります。
+
+# ダウンロードしたファイルの削除
+# brew cask cleanupコマンドを使うことで不要なダウンロードファイルなどを削除してくれます。
+$ brew cask cleanup
+
+# コードスニペット
+brew cask install atext
+# 動画再生ソフト
+brew cask install vlc
+# 解凍ソフト
+brew cask install the-unarchiver
 
 ################################################
+# iTerm2の使い方
+
+
+
+
+
 
 
 ################################################
@@ -112,23 +238,38 @@ alias cdroot='cd-gitroot'
 
 
 ################################################
-# 
+# rubyのインストール
+################################################
+rbenv install -l
+sudo rbenv install 2.2.3
+
+mkdir ~/work/rails_app/
+cd ~/worl/rails_app
+
+bundle init
+
+# railsのコメントアウトを外す。
+vi Gemfile
+
+bundle install --path vendor/bundle
+
+#railsアプリケーションのひな形作成
+bundle exec rails new .
+bundle exec rails new . --skip-bundle -d mysql
+
+
+################################################
+
+
+################################################
+#
 ################################################
 
 
 
 ################################################
-
-
 ################################################
-# 
-################################################
-
-
-
-################################################
-################################################
-# 
+#
 ################################################
 
 

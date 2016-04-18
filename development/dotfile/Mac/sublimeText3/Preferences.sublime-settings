@@ -1,0 +1,65 @@
+{
+  "auto_complete": true,
+  "auto_complete_commit_on_tab": true,
+  "auto_complete_delay": 50,
+  "auto_complete_size_limit": 4194304,
+  "auto_indent": true,
+  "auto_match_enabled": true,
+  "bold_folder_labels": true,
+  "caret_style": "phase",
+  "close_windows_when_empty": false,
+  "color_scheme": "Packages/User/SublimeLinter/zenburn (SL).tmTheme",
+  "default_encoding": "UTF-8",
+  "detect_indentation": true,
+  "disable_formatted_linebreak": true,
+  "disabled_single_snippet_for_scopes": "",
+  "draw_indent_guides": true,
+  "draw_minimap_border": true,
+  "draw_white_space": "all",
+  "enable_emmet_keymap": true,
+  "ensure_newline_at_eof_on_save": true,
+  "fade_fold_buttons": true,
+  "fold_buttons": true,
+  "material_theme_small_statusbar": true,          // 下部ステータスバーを小さくする
+  "material_theme_bold_tab": true,
+  "material_theme_small_tab": true,
+  "font_face": "Ricty",
+  "font_options":
+  [
+    "subpixel_antialias"
+  ],
+  "font_size": 18,
+  "gutter": true,
+  "highlight_line": true,
+  "highlight_modified_tabs": true,
+  "hot_exit": false,
+  "ignored_packages":
+  [
+    "Vintage"
+  ],
+  "indent_guide_options":
+  [
+    "draw_normal",
+    "draw_active"
+  ],
+  "indent_subsequent_lines": true,
+  "line_numbers": true,
+  "line_padding_top": 5,
+  "margin": -3,
+  "open_files_in_new_window": false,
+  "save_on_focus_lost": false,
+  "show_encoding": true,
+  "show_line_ending": true,
+  "tab_completion": true,
+  "tab_size": 2,
+  "theme": "Material-Theme.sublime-theme",
+  "translate_tabs_to_spaces": true,
+  "trim_automatic_white_space": true,
+  "trim_trailing_white_space_on_save": true,
+  "use_tab_stops": true,
+  "word_wrap": true,
+  "wrap_width": 0
+}
+
+
+
