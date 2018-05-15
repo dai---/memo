@@ -3,87 +3,84 @@ http://www.fmworld.net/product/hard/pcpm0508/deskpower/tx/info/index.html
 
 FUJITSU
 FMV-deskpower TX90M/D
-32Œ^
+32åž‹
 
-yŽd—lz
+ã€ä»•æ§˜ã€‘
 
-”——Í‚Ì‚ ‚é‰f‘œ‚ªŠy‚µ‚ß‚é‘å‰æ–Ê32Œ^ƒƒCƒh‰t»(1366~768ƒhƒbƒg)“‹ÚBLŽ‹–ìŠp‘Î‰ž‚ÅA
-‚Ð‚ë‚¢ƒAƒ“ƒOƒ‹‚©‚ç‰f‘œ‚ðŒ©‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·B‚³‚ç‚ÉAg”’h‚Ì”ü‚µ‚³‚ðŒüã‚µA
-–¾‚é‚­‚ ‚´‚â‚©‚È‰æ–Ê•\Ž¦‚ðŽÀŒ»‚µ‚Ü‚·B
+è¿«åŠ›ã®ã‚ã‚‹æ˜ åƒãŒæ¥½ã—ã‚ã‚‹å¤§ç”»é¢32åž‹ãƒ¯ã‚¤ãƒ‰æ¶²æ™¶(1366Ã—768ãƒ‰ãƒƒãƒˆ)æ­è¼‰ã€‚åºƒè¦–é‡Žè§’å¯¾å¿œã§ã€
+ã²ã‚ã„ã‚¢ãƒ³ã‚°ãƒ«ã‹ã‚‰æ˜ åƒã‚’è¦‹ã‚‹ã“ã¨ãŒã§ãã¾ã™ã€‚ã•ã‚‰ã«ã€â€œç™½â€ã®ç¾Žã—ã•ã‚’å‘ä¸Šã—ã€
+æ˜Žã‚‹ãã‚ã–ã‚„ã‹ãªç”»é¢è¡¨ç¤ºã‚’å®Ÿç¾ã—ã¾ã™ã€‚
 
-TX90M/D‚Å‚ÍA’nãEBSE110“xCSƒfƒWƒ^ƒ‹•ú‘—‘Î‰ž‚ÌƒfƒWƒ^ƒ‹EƒnƒCƒrƒWƒ‡ƒ“EƒeƒŒƒrƒ`ƒ…[ƒi[‚ð“‹ÚB
+TX90M/Dã§ã¯ã€åœ°ä¸Šãƒ»BSãƒ»110åº¦CSãƒ‡ã‚¸ã‚¿ãƒ«æ”¾é€å¯¾å¿œã®ãƒ‡ã‚¸ã‚¿ãƒ«ãƒ»ãƒã‚¤ãƒ“ã‚¸ãƒ§ãƒ³ãƒ»ãƒ†ãƒ¬ãƒ“ãƒãƒ¥ãƒ¼ãƒŠãƒ¼ã‚’æ­è¼‰ã€‚
 
-ƒƒCƒ„ƒŒƒXƒ^ƒCƒv‚ÌƒL[ƒ{[ƒh‚Æƒ}ƒEƒX‚ð“‹Ú
-ƒ}ƒEƒXFŒõŠwŽ®
+ãƒ¯ã‚¤ãƒ¤ãƒ¬ã‚¹ã‚¿ã‚¤ãƒ—ã®ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã¨ãƒžã‚¦ã‚¹ã‚’æ­è¼‰
+ãƒžã‚¦ã‚¹ï¼šå…‰å­¦å¼
 
-USB2.0~6ƒ|[ƒg“‹Ú
+USB2.0Ã—6ãƒãƒ¼ãƒˆæ­è¼‰
 
-M—Š‚ÌŠî”Õ‚ð’ñ‹Ÿ‚·‚éV¢‘ãBIOSAPhoenix TrustedCore“‹ÚB
-
-
-
-”­”„ŽžŠúF2005”N9ŒŽ2“ú(‹à)
-
-ƒ`ƒbƒvƒZƒbƒgFƒCƒ“ƒeƒ‹ŽÐ» 915GV Chipset
-OSFWindowsRXP Home
-OfficeFOffice Personal 2003
-
-CPUFHTƒeƒNƒmƒƒW ƒCƒ“ƒeƒ‹R PentiumR 4 ƒvƒƒZƒbƒT 630(3GHz)
-ƒƒ‚ƒŠF1GB(512MB~2)(ƒfƒ…ƒAƒ‹ƒ`ƒƒƒlƒ‹DDR2 SDRAMAPC2-4200‘Î‰ž)
-HDDF600GB(–ñ300GB~2)(ƒVƒŠƒAƒ‹ ATA/150A7200‰ñ“]/•ª)
-ƒhƒ‰ƒCƒuFƒX[ƒp[ƒ}ƒ‹ƒ`(DVD}R DL(2‘w)‘‚«ž‚Ý)
-
-—â‹pƒtƒ@ƒ“‚ª‹K’è‰ñ“]”‚É’B‚µ‚È‚¢ˆ×BIOSƒ`ƒFƒbƒN‚ÅƒGƒ‰[‚ª
-o‚Ä‚¢‚é‚Ì‚Å‚µ‚å‚¤B‚¿‚á‚ñ‚Æ´‘|‚·‚×‚µB
+ä¿¡é ¼ã®åŸºç›¤ã‚’æä¾›ã™ã‚‹æ–°ä¸–ä»£BIOSã€Phoenix TrustedCoreæ­è¼‰ã€‚
 
 
-ƒoƒ‰‚·‚Æ‚±‚ñ‚ÈŠ´‚¶
+
+ç™ºå£²æ™‚æœŸï¼š2005å¹´9æœˆ2æ—¥(é‡‘)
+
+ãƒãƒƒãƒ—ã‚»ãƒƒãƒˆï¼šã‚¤ãƒ³ãƒ†ãƒ«ç¤¾è£½ 915GV Chipset
+OSï¼šWindowsRXP Home
+Officeï¼šOffice Personal 2003
+
+CPUï¼šHTãƒ†ã‚¯ãƒŽãƒ­ã‚¸ ã‚¤ãƒ³ãƒ†ãƒ«R PentiumR 4 ãƒ—ãƒ­ã‚»ãƒƒã‚µ 630(3GHz)
+ãƒ¡ãƒ¢ãƒªï¼š1GB(512MBÃ—2)(ãƒ‡ãƒ¥ã‚¢ãƒ«ãƒãƒ£ãƒãƒ«DDR2 SDRAMã€PC2-4200å¯¾å¿œ)
+HDDï¼š600GB(ç´„300GBÃ—2)(ã‚·ãƒªã‚¢ãƒ« ATA/150ã€7200å›žè»¢/åˆ†)
+ãƒ‰ãƒ©ã‚¤ãƒ–ï¼šã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒžãƒ«ãƒ(DVDÂ±R DL(2å±¤)æ›¸ãè¾¼ã¿)
+
+å†·å´ãƒ•ã‚¡ãƒ³ãŒè¦å®šå›žè»¢æ•°ã«é”ã—ãªã„ç‚ºBIOSãƒã‚§ãƒƒã‚¯ã§ã‚¨ãƒ©ãƒ¼ãŒ
+å‡ºã¦ã„ã‚‹ã®ã§ã—ã‚‡ã†ã€‚ã¡ã‚ƒã‚“ã¨æ¸…æŽƒã™ã¹ã—ã€‚
+
+
+ãƒãƒ©ã™ã¨ã“ã‚“ãªæ„Ÿã˜
 http://trendy.nikkeibp.co.jp/article/tokushu/gen/20050715/112832/?P=13
 
-ƒAƒbƒvƒf[ƒg‚Í‚±‚±‚©‚ç
+ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆã¯ã“ã“ã‹ã‚‰
 http://www.fmworld.net/cgi-bin/driversearch/drvlistm.cgi?MODEL_NAME=FMVTX90MD&KANZEN=1
 
-‰¿Ši.com
+ä¾¡æ ¼.com
 http://bbs.kakaku.com/bbs/00100417712/
 
-“d‰ðƒRƒ“ƒfƒ“ƒT‚ª‰ö‚µ‚¢
+é›»è§£ã‚³ãƒ³ãƒ‡ãƒ³ã‚µãŒæ€ªã—ã„
 http://blog.goo.ne.jp/doratomonet/e/bd82fb65f84f08499031a9dc19c310a8
 http://blog.goo.ne.jp/doratomonet/e/9b5b45c30b8431a82e444ff3431763da
 
-ª‚Æ“¯‚¶l
-ƒr[ƒv‰¹@ƒƒ‚ƒŠ‚ªŠO‚ê‚Ä‚¢‚Ü‚µ‚½B‚»‚µ‚Äšº‚ª‘å•Ï‚ÈŽ–‚ÉB
+â†‘ã¨åŒã˜äºº
+ãƒ“ãƒ¼ãƒ—éŸ³ã€€ãƒ¡ãƒ¢ãƒªãŒå¤–ã‚Œã¦ã„ã¾ã—ãŸã€‚ãã—ã¦åŸƒãŒå¤§å¤‰ãªäº‹ã«ã€‚
 http://blog.goo.ne.jp/doratomonet/e/3a7a180342717c1ef3855c12419361fe
 
-‚¨‚¶‚³‚ñC—
+ãŠã˜ã•ã‚“ä¿®ç†
 http://ameblo.jp/suzuranojisan/entry-10839557898.html
 
-FUJITSU@ƒlƒbƒg‚ÅŒÌáf’f
+FUJITSUã€€ãƒãƒƒãƒˆã§æ•…éšœè¨ºæ–­
 https://www.fmworld.net/cgi-bin/pcrepair/sdwz/sdwz0105.cgi
 
-•xŽm’Êƒpƒ\ƒRƒ“f’fƒZƒ“ƒ^[
-0120|950|222
+å¯Œå£«é€šãƒ‘ã‚½ã‚³ãƒ³è¨ºæ–­ã‚»ãƒ³ã‚¿ãƒ¼
+0120ï¼950ï¼222
 
-ƒ}ƒjƒ…ƒAƒ‹ƒ_ƒEƒ“ƒ[ƒh
+ãƒžãƒ‹ãƒ¥ã‚¢ãƒ«ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰
 http://www.fmworld.net/cgi-bin/driversearch/drvlistm.cgi?SERIES=&MODEL_NAME=FMVTX90MD&OS=&CATEGORY=91&KANZEN=1&COLOR=0
 
-Phoenix@BIOS‚Ìƒr[ƒv‰¹@‰ðÍ
+Phoenixã€€BIOSã®ãƒ“ãƒ¼ãƒ—éŸ³ã€€è§£æž
 http://hardotaku.blog69.fc2.com/blog-entry-48.html
-Phoenix@BIOS‚Ìƒr[ƒv‰¹ˆê——
+Phoenixã€€BIOSã®ãƒ“ãƒ¼ãƒ—éŸ³ä¸€è¦§
 http://www.bioscentral.com/beepcodes/phoenixbeep.htm
-BIOS‚Ìƒr[ƒv‰¹
+BIOSã®ãƒ“ãƒ¼ãƒ—éŸ³
 http://www.s-emile.jp/report/example/topics/20101130b.html
 
-ƒpƒ\ƒRƒ“C—‰®
+ãƒ‘ã‚½ã‚³ãƒ³ä¿®ç†å±‹
 http://www.it-solutions.co.jp/keyboard.htm
 
-BIOSÝ’è•û–@@F2ƒL[‚©DeleteƒL[‚ð˜A‘Å
+BIOSè¨­å®šæ–¹æ³•ã€€F2ã‚­ãƒ¼ã‹Deleteã‚­ãƒ¼ã‚’é€£æ‰“
 http://asugi23.web.infoseek.co.jp/diyf/diy504.htm#1-5
 
-CMOSƒNƒŠƒAŽd•û
+CMOSã‚¯ãƒªã‚¢ä»•æ–¹
 http://www.unitycorp.co.jp/support/faq2/answer/cmos_clear.html
 
-–â‘è‚ÌØ‚è•ª‚¯
+å•é¡Œã®åˆ‡ã‚Šåˆ†ã‘
 http://www.unitycorp.co.jp/support/faq2/answer/when_starting.html
-
-
-

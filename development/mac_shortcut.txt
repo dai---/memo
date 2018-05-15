@@ -1,27 +1,24 @@
 
 
-command + Q 
-F
- 
-ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌI—¹
-command + WF ƒEƒBƒ“ƒhƒE‚ğ•Â‚¶‚é
-command + option + WF‘SƒEƒBƒ“ƒhƒE‚ğ•Â‚¶‚é 
- 
+command + Q
+ï¼š
 
-command + AF‘S‘I‘ğ 
-command + CFƒRƒs[ 
-command + XFƒJƒbƒg 
-command + VFƒy[ƒXƒg 
-
-command + ZFæ‚èÁ‚·^‚â‚è’¼‚· 
-command + SF•Û‘¶ 
-command + FFŒŸõ
-
-command + RFƒŠƒ[ƒh  
-command + Shift + 3FƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒgi‘S‰æ–Êj
-command + Shift + 4 FƒXƒNƒŠ[ƒ“ƒVƒ‡ƒbƒgi‘I‘ğ”ÍˆÍj
-command + deleteFƒtƒ@ƒCƒ‹‚ğƒSƒ~” ‚ÉˆÚ“®
-command + tabFƒEƒBƒ“ƒhƒE‚ÌØ‚è‘Ö‚¦
+ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®çµ‚äº†
+command + Wï¼š ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’é–‰ã˜ã‚‹
+command + option + Wï¼šå…¨ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’é–‰ã˜ã‚‹
 
 
+command + Aï¼šå…¨é¸æŠ
+command + Cï¼šã‚³ãƒ”ãƒ¼
+command + Xï¼šã‚«ãƒƒãƒˆ
+command + Vï¼šãƒšãƒ¼ã‚¹ãƒˆ
 
+command + Zï¼šå–ã‚Šæ¶ˆã™ï¼ã‚„ã‚Šç›´ã™
+command + Sï¼šä¿å­˜
+command + Fï¼šæ¤œç´¢
+
+command + Rï¼šãƒªãƒ­ãƒ¼ãƒ‰
+command + Shift + 3ï¼šã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚·ãƒ§ãƒƒãƒˆï¼ˆå…¨ç”»é¢ï¼‰
+command + Shift + 4 ï¼šã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã‚·ãƒ§ãƒƒãƒˆï¼ˆé¸æŠç¯„å›²ï¼‰
+command + deleteï¼šãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚´ãƒŸç®±ã«ç§»å‹•
+command + tabï¼šã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®åˆ‡ã‚Šæ›¿ãˆ
