@@ -1,0 +1,72 @@
+
+
+個人的におすすめのMacの初期設定まとめ
+http://dackdive.hateblo.jp/entry/2015/08/29/234600
+
+########################################################################
+
+# スクロールの速さを変える
+ターミナルで
+defaults write "Apple Global Domain" com.apple.mouse.scaling 1.7
+を打ってPCを再起動します。
+########################################################################
+
+Macのシステム環境設定から設定できる
+
+キーリピート速度（キー押しっぱなし時に対応する文字が連続して入力される速さ）
+キーリピート開始速度（キー押下からキーリピート開始までの速さ）
+
+現在のキーリピート速度を表示
+defaults read -g KeyRepeat
+3
+現在のキーリピート開始速度を表示
+defaults read -g InitialKeyRepeat
+12
+
+キーリピート速度を1に設定（小さい程速い）
+defaults write -g KeyRepeat -int 2
+キーリピート開始速度の早さを10に設定（小さい程早い）
+defaults write -g InitialKeyRepeat -int 15
+
+
+↓この設定にした。
+defaults write -g KeyRepeat -int 2
+defaults write -g InitialKeyRepeat -int 12
+
+
+キーリピート速度をデフォルトに戻す
+defaults delete -g KeyRepeat
+
+キーリピート開始速度をデフォルトに戻す
+defaults delete -g InitialKeyRepeat
+
+
+
+
+
+########################################################################
+
+Finderのウィンドウタイトルでフルパスを表示する
+defaults write com.apple.finder _FXShowPosixPathInTitle -boolean true
+
+
+########################################################################
+
+Finder で隠しファイル／フォルダを表示する
+$ defaults write com.apple.finder AppleShowAllFiles -boolean true
+$ killall Finder
+
+########################################################################
+
+karabiner-elementsのインストール
+brew cask install karabiner-elements
+
+########################################################################
+
+マウスのボタンをkarabiner-elementsで割り当てる
+https://okfoxy1990.com/mac-mouse-setting-change
+
+
+
+########################################################################
+########################################################################

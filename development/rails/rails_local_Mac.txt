@@ -148,8 +148,99 @@ brew cask install the-unarchiver
 ################################################
 
 
+################################################
+# zplugとpreztoのインストール @macOS
+################################################
+brew install zplug
+
+
+
+~/.zshrc内へ追記
+
+export ZPLUG_HOME=/usr/local/opt/zplug
+source $ZPLUG_HOME/init.zsh
+
+zplug "sorin-ionescu/prezto"
+
+
+
+
+zshを再起動して
+
+$ zplug install
+symbolik linkをはる。
+
+$ ln -s /usr/local/opt/zplug/repos/sorin-ionescu/prezto $HOME/.zprezto
+これより，.zshrc, .zlogin, .zlogout, .zprofile, .zshenvが上書きされてしまうため必要なら退避させておく。
+
+preztoのインストール手順に従い，
+
+$
+setopt EXTENDED_GLOB
+for rcfile in "${ZDOTDIR:-$HOME}"/.zprezto/runcoms/^README.md(.N); do
+  ln -s "$rcfile" "${ZDOTDIR:-$HOME}/.${rcfile:t}"
+done
+
+ファイルが既に存在するてきなエラーが表示されたら，そのファイルを消しておく。
+さっきせっかく書いた.zshrcも消されてしまうので，同様のないようを再生成された.zshrcに書き込む。
+
+
+
+
+zplug "mollifier/anyframe"
+zplug 'mollifier/anyframe', \
+    use:'anyframe-functions/{actions,selectors,sources,widgets}/*', lazy:true
+zle -N anyframe-widget-cd-ghq-repository
+# ...
+bindkey '^x^g' anyframe-widget-cd-ghq-repository
+# ...
+
+
+zplug "mollifier/cd-gitroot"
+
+zplug "stedolan/jq", from:gh-r, as:command \
+    | zplug "b4b4r07/emoji-cli", if:"which jq"
+
+zplug "b4b4r07/enhancd", of:enhancd.sh
+
+zplug "zsh-users/zsh-history-substring-search", do:"__zsh_version 4.3"
+
+# compinit 以降に読み込むようにロードの優先度を変更する
+zplug "zsh-users/zsh-syntax-highlighting", defer:2
+
+zplug "zsh-users/zsh-completions"
+zplug "zsh-users/zsh-completions", use:'src/_*', lazy:true
+
+zplug "zsh-users/zsh-autosuggestions"
+
+zplug "chrissicool/zsh-256color"
+
+# 必要ならばアーキテクチャ指定
+zplug "peco/peco", as:command, from:gh-r, of:"*amd64*"
 
 ################################################
+テーマ確認
+prompt -l
+Currently available prompt themes:
+agnoster cloud damoekri giddie kylewest minimal nicoulaj paradox
+peepcode powerlevel9k powerline pure skwp smiley sorin steeef
+adam1 adam2 bart bigfade clint default elite2 elite fade fire
+off oliver pws redhat restore suse walters zefram
+
+
+prompt -p steeef
+
+################################################
+# rickyをインストール
+################################################
+
+$ brew tap sanemat/font
+$ brew install ricty
+or
+$ brew install ricty --with-powerline
+
+$ cp -f /usr/local/opt/ricty/share/fonts/Ricty*.ttf ~/Library/Fonts/
+$ fc-cache -vf
 
 
 ################################################
